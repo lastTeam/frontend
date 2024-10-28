@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 import { Header } from "../layout/Header";
@@ -7,117 +7,8 @@ import { HeroSection } from "./HeroSection";
 import { CategoryCard } from "./CategoryCard";
 import { ProductCard } from "./ProductCard";
 import { Newsletter } from "./Newsletter";
-
-const products = [
-  {
-    id: 1,
-    image:
-      "https://i.pinimg.com/474x/d0/98/0e/d0980ee3786258228c0e73c61f64c727.jpg",
-    name: "Product 1",
-    price: 199.0,
-    originalPrice: 400.0,
-    isNew: true,
-    discount: 50,
-    rating:
-      "https://i.pinimg.com/564x/0e/a1/f9/0ea1f9393a423e4198644ec9408317ce.jpg", // Optional
-  },
-  {
-    id: 2,
-    image:
-      "https://i.pinimg.com/474x/a9/95/27/a99527df5f3be478ded05371d998a060.jpg",
-    name: "Product 1",
-    price: 199.0,
-    originalPrice: 400.0,
-    isNew: true,
-    discount: 50,
-    rating:
-      "https://i.pinimg.com/564x/0e/a1/f9/0ea1f9393a423e4198644ec9408317ce.jpg", // Optional
-  },
-  {
-    id: 3,
-    image:
-      "https://i.pinimg.com/236x/91/3f/4a/913f4a71da79ce423e3bf5ae46cf9c54.jpg",
-    name: "Product 2", // Change name for uniqueness
-    price: 199.0,
-    originalPrice: 400.0,
-    isNew: true,
-    discount: 50,
-    rating:
-      "https://i.pinimg.com/564x/0e/a1/f9/0ea1f9393a423e4198644ec9408317ce.jpg", // Optional
-  },
-  {
-    id: 4,
-    image:
-      "https://i.pinimg.com/474x/e7/eb/fb/e7ebfb6346be8b771db8e195b5a47e1b.jpg",
-    name: "Product 3", // Change name for uniqueness
-    price: 199.0,
-    originalPrice: 400.0,
-    isNew: true,
-    discount: 50,
-    rating:
-      "https://i.pinimg.com/564x/0e/a1/f9/0ea1f9393a423e4198644ec9408317ce.jpg", // Optional
-  },
-  {
-    id: 5,
-    image:
-      "https://i.pinimg.com/474x/a2/cc/37/a2cc37c96dedc3018aa9f484cf0ea7e2.jpg",
-    name: "Product 4", // Change name for uniqueness
-    price: 199.0,
-    originalPrice: 400.0,
-    isNew: true,
-    discount: 50,
-    rating:
-      "https://i.pinimg.com/564x/0e/a1/f9/0ea1f9393a423e4198644ec9408317ce.jpg", // Optional
-  },
-  {
-    id: 6,
-    image:
-      "https://i.pinimg.com/474x/43/84/8b/43848b3a937b3d4e96fc5ab48bccf494.jpg",
-    name: "Product 5", // Change name for uniqueness
-    price: 199.0,
-    originalPrice: 400.0,
-    isNew: true,
-    discount: 50,
-    rating:
-      "https://i.pinimg.com/564x/0e/a1/f9/0ea1f9393a423e4198644ec9408317ce.jpg", // Optional
-  },
-  {
-    id: 7,
-    image:
-      "https://i.pinimg.com/474x/e3/27/f2/e327f2fa25502d1e8376c4d875babb7b.jpg",
-    name: "Product 6", // Change name for uniqueness
-    price: 199.0,
-    originalPrice: 400.0,
-    isNew: true,
-    discount: 50,
-    rating:
-      "https://i.pinimg.com/564x/0e/a1/f9/0ea1f9393a423e4198644ec9408317ce.jpg", // Optional
-  },
-  {
-    id: 8,
-    image:
-      "https://i.pinimg.com/474x/36/7e/22/367e22664f75ad4ca39539c8ef0dd71a.jpg",
-    name: "Product 7", // Change name for uniqueness
-    price: 299.0,
-    originalPrice: 500.0,
-    isNew: true,
-    discount: 40,
-    rating:
-      "https://i.pinimg.com/564x/0e/a1/f9/0ea1f9393a423e4198644ec9408317ce.jpg", // Optional
-  },
-  {
-    id: 9,
-    image:
-      "https://i.pinimg.com/474x/f5/61/b1/f561b16383762c5b6d7a8f39f3c19a02.jpg",
-    name: "Product 8", // Change name for uniqueness
-    price: 249.0,
-    originalPrice: 450.0,
-    isNew: false,
-    discount: 10,
-    rating:
-      "https://i.pinimg.com/564x/0e/a1/f9/0ea1f9393a423e4198644ec9408317ce.jpg", // Optional
-  },
-];
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const categories = [
   {
@@ -137,8 +28,20 @@ const categories = [
       "https://i.pinimg.com/474x/5b/f9/ec/5bf9ecee4f0f6d9c2995627439bdbc23.jpg",
   },
 ];
-
+const baseUrl = "http://localhost:3000/api/";
 export function HomePage() {
+  const [products, setProducts] = useState();
+
+  useEffect(() => {
+    async function getProducts() {
+      const data = await axios.get(`${baseUrl}products`);
+      setProducts(data.data.products);
+    }
+    getProducts();
+  }, []);
+
+  console.log("products", products);
+
   return (
     <main>
       <Header />
@@ -179,8 +82,8 @@ export function HomePage() {
           </Link>
         </div>
         <div className="flex flex-wrap gap-6 self-end mt-12 max-md:mt-10">
-          {products.map((product) => (
-            <ProductCard key={product.name} product={product} />
+          {products?.map((product) => (
+            <ProductCard key={product.title} product={product} />
           ))}
         </div>
         <div className="flex flex-col items-start mt-12 max-w-full bg-gray-200 rounded-[80px] w-[1120px] max-md:pr-5 max-md:mt-10">
