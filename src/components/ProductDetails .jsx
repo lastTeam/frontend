@@ -7,7 +7,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     // Fetch product details by ID, including reviews and seller information
-    fetch(`http://localhost:3000/api/products/${productId}`)
+    fetch(`http://localhost:5000/api/products/${productId}`)
       .then((response) => response.json())
       .then((data) => setProduct(data))
       .catch((error) => console.error('Error fetching product:', error));

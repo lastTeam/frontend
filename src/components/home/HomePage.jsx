@@ -28,7 +28,7 @@ const categories = [
       "https://i.pinimg.com/474x/5b/f9/ec/5bf9ecee4f0f6d9c2995627439bdbc23.jpg",
   },
 ];
-const baseUrl = "http://localhost:3000/api/";
+const baseUrl = "http://localhost:5000/api/";
 export function HomePage() {
   const [products, setProducts] = useState();
 
