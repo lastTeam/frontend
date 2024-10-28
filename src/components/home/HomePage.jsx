@@ -12,15 +12,15 @@ import axios from "axios";
 
 const categories = [
   {
-    title: "Tunisian Jars",
+    title: "Tunisian Arts",
     image:
-      "https://i.pinimg.com/474x/ff/83/9d/ff839db119b6e89be9966d63d74b9354.jpg",
+      "https://i.pinimg.com/474x/86/05/10/860510f49cc864bd83145871973d336b.jpg",
     className: "min-h-[664px]",
   },
   {
-    title: "Tradition bowls",
+    title: "Tradition Selver ",
     image:
-      "https://i.pinimg.com/474x/c5/e3/3e/c5e33e73113885ba2548d6c50547d002.jpg",
+      "https://i.pinimg.com/736x/3c/65/74/3c657465f9664a9037b8ce2a3bc90904.jpg",
   },
   {
     title: "Khazaf",
@@ -28,7 +28,7 @@ const categories = [
       "https://i.pinimg.com/474x/5b/f9/ec/5bf9ecee4f0f6d9c2995627439bdbc23.jpg",
   },
 ];
-const baseUrl = "http://localhost:3000/api/";
+const baseUrl = "http://localhost:5000/api/";
 export function HomePage() {
   const [products, setProducts] = useState();
 
