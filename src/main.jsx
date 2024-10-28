@@ -1,12 +1,10 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./authentication/Login.jsx";
 import Signup from "./authentication/SignUp.jsx";
 import "./index.css";
+import ProductDetails from "./components/ProductDetails .jsx";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +15,7 @@ const router = createBrowserRouter([
     path: "signup",
     element: <Signup />,
   },
+  { path: "products/:productId", element: <ProductDetails /> },
 ]);
 
 createRoot(document.getElementById("root")).render(
