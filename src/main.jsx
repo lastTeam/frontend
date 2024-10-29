@@ -5,6 +5,7 @@ import Login from "./authentication/Login.jsx";
 import Signup from "./authentication/SignUp.jsx";
 import HomePage from "./components/home/HomePage.jsx";
 import "./index.css";
+import ProductDetails from "./components/ProductDetails .jsx";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
     path: "/home",
     element: <HomePage />,
   },
+  { path: "products/:productId", element: <ProductDetails /> },
 ]);
 
 createRoot(document.getElementById("root")).render(
