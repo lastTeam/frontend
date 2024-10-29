@@ -1,5 +1,7 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCartShopping } from "@fortawesome/free-solid-svg-icons"; // Import the cart icon
 
 export function Header() {
   return (
@@ -12,7 +14,7 @@ export function Header() {
           <img
             loading="lazy"
             src="https://cdn.builder.io/api/v1/image/assets/9ae4fe26caea4ec4b922b3cd752ddc12/cebfcb5e4788737dcb6dc75251bba3ca921ac5d4f139f9f21b869fccfd6aa970?apiKey=9ae4fe26caea4ec4b922b3cd752ddc12&"
-            alt=""
+            alt="Discount banner"
             className="object-contain shrink-0 w-6 aspect-square"
           />
           <p
@@ -25,7 +27,7 @@ export function Header() {
         <img
           loading="lazy"
           src="https://cdn.builder.io/api/v1/image/assets/9ae4fe26caea4ec4b922b3cd752ddc12/9db746d8b5575526a41c45b10725275eef92574e4d17be77ccb1333262efaf28?apiKey=9ae4fe26caea4ec4b922b3cd752ddc12&"
-          alt=""
+          alt="Another banner"
           className="object-contain shrink-0 my-auto w-5 aspect-square"
         />
       </div>
@@ -75,20 +77,28 @@ export function Header() {
           </button>
         </div>
         <div className="flex gap-4 items-center self-stretch my-auto">
-          <button
+          <Link
+            to="/account"
             aria-label="Account"
             className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square"
           >
             <img
               loading="lazy"
               src="https://cdn.builder.io/api/v1/image/assets/9ae4fe26caea4ec4b922b3cd752ddc12/d8ac2af4fe98d3962e7216f1d3a4f909c949da16f51206d4e6f2839c71acdc86?apiKey=9ae4fe26caea4ec4b922b3cd752ddc12&"
-              alt=""
+              alt="Account Icon"
             />
-          </button>
-          <button
+          </Link>
+          <Link
+            to="/cart"
             aria-label="Cart"
             className="flex shrink-0 self-stretch my-auto h-7 w-[50px]"
-          />
+          >
+            <FontAwesomeIcon
+              icon={faCartShopping}
+              className="w-6 h-6 text-white"
+            />{" "}
+            {/* Use FontAwesomeIcon here */}
+          </Link>
         </div>
       </nav>
     </header>

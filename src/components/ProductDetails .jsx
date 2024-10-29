@@ -1,10 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useCart } from "./home/CartContext"; // Import the useCart hook
 
 function ProductDetails() {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { addToCart } = useCart(); // Get addToCart from useCart
 
   useEffect(() => {
     // Fetch the product data by ID
@@ -21,7 +23,13 @@ function ProductDetails() {
   }, [productId]);
 
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
-  if (!product) return <p className="text-center text-red-500">Product not found.</p>;
+  if (!product)
+    return <p className="text-center text-red-500">Product not found.</p>;
+
+  const handleAddToCart = () => {
+    console.log("Adding to cart:", product);
+    addToCart(product); // Call addToCart with the product
+  };
 
   const {
     title,
@@ -38,17 +46,16 @@ function ProductDetails() {
     <div className="container mx-auto px-4 py-12">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Images */}
-<div className="flex flex-col gap-4">
-  {[...new Set(images)]?.map((image, index) => (
-    <img
-      key={index}
-      src={image}
-      alt={title}
-      className="object-cover rounded-lg w-full h-96 shadow-md"
-    />
-  ))}
-</div>
-
+        <div className="flex flex-col gap-4">
+          {[...new Set(images)]?.map((image, index) => (
+            <img
+              key={index}
+              src={image}
+              alt={title}
+              className="object-cover rounded-lg w-full h-96 shadow-md"
+            />
+          ))}
+        </div>
 
         {/* Product Details */}
         <div className="flex flex-col space-y-6">
@@ -91,12 +98,13 @@ function ProductDetails() {
             <h2 className="text-xl font-semibold text-gray-900">Reviews</h2>
             {reviews && reviews.length > 0 ? (
               reviews.map((review, index) => (
-                <div key={index} className="mt-2 p-4 bg-gray-100 rounded-lg shadow-md">
+                <div
+                  key={index}
+                  className="mt-2 p-4 bg-gray-100 rounded-lg shadow-md"
+                >
                   <p className="text-gray-700">Rating: {review.rating}/5</p>
                   <p className="text-gray-600">{review.comment}</p>
-                  <p className="text-gray-500">
-                    - {review.user?.username}
-                  </p>
+                  <p className="text-gray-500">- {review.user?.username}</p>
                 </div>
               ))
             ) : (
@@ -106,7 +114,9 @@ function ProductDetails() {
 
           {/* Seller Information */}
           <div className="p-4 bg-gray-50 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold text-gray-900">Seller Information</h3>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Seller Information
+            </h3>
             <p className="text-gray-700">
               <strong>Name:</strong> {owner?.firstName} {owner?.lastName}
             </p>
@@ -120,7 +130,10 @@ function ProductDetails() {
 
           {/* Buttons */}
           <div className="flex gap-4">
-            <button className="px-4 py-2 bg-yellow-500 text-white font-medium rounded-lg shadow-md hover:bg-yellow-600 transition duration-300">
+            <button
+              className="px-4 py-2 bg-yellow-500 text-white font-medium rounded-lg shadow-md hover:bg-yellow-600 transition duration-300"
+              onClick={handleAddToCart} // Add onClick event
+            >
               Add to Cart
             </button>
             <button className="px-4 py-2 bg-blue-500 text-white font-medium rounded-lg shadow-md hover:bg-blue-600 transition duration-300">
