@@ -10,6 +10,7 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [id, setId] = useState();
   const navigate = useNavigate();
 
   const handleSignUp = async () => {
@@ -30,7 +31,7 @@ const Signup = () => {
         "roles": role
       });
       console.log(response);
-      
+      setId(response.data.id) 
       navigate("/home");
     } catch (error) {
       setErrorMessage("Error during sign up. Please try again.");
