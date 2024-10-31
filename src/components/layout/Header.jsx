@@ -2,11 +2,14 @@ import React , {useState} from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-export function Header() {
+export function Header({onSortByPrice} ) {
+  const [isDescending, setIsDescending] = React.useState(true);
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
-
-
+  const handleSortClick = () => {
+    setIsDescending(!isDescending);
+    onSortByPrice(isDescending);
+  };
   const handleSearchResults = (e) => {
     setSearch(e.target.value)
   };
@@ -17,8 +20,6 @@ export function Header() {
       navigate(`/search/${search}`);
     }
   };
-
-
   return (
     <header>
       <div
@@ -94,6 +95,37 @@ export function Header() {
            />
          </button>
        </div>
+        {/* Add Sort button */}
+        <button
+  onClick={handleSortClick}
+  className="ml-4 px-4 py-2 text-sm font-semibold text-white transition duration-300 transform bg-[#EBBE43] rounded-lg shadow-md hover:bg-[#D4A833] hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D4A833]"
+>
+  <span className="flex items-center gap-1">
+    <img
+      src="https://cdn.builder.io/api/v1/image/assets/9ae4fe26caea4ec4b922b3cd752ddc12/74d610171b49cc3b18b456fe06d02bff2a8f09126ee10249b3afcbc71e046e51?apiKey=9ae4fe26caea4ec4b922b3cd752ddc12&"
+      alt="Sort Icon"
+      className="w-4 h-4"
+    />
+    {isDescending ? "Sort: High to Low" : "Sort: Low to High"}
+  </span>
+</button>
+
+        <div className="flex gap-4 items-center self-stretch my-auto">
+          <button
+            aria-label="Account"
+            className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square"
+          >
+            <img
+              loading="lazy"
+              src="https://cdn.builder.io/api/v1/image/assets/9ae4fe26caea4ec4b922b3cd752ddc12/d8ac2af4fe98d3962e7216f1d3a4f909c949da16f51206d4e6f2839c71acdc86?apiKey=9ae4fe26caea4ec4b922b3cd752ddc12&"
+              alt=""
+            />
+          </button>
+          <button
+            aria-label="Cart"
+            className="flex shrink-0 self-stretch my-auto h-7 w-[50px]"
+          />
+        </div>
       </nav>
     </header>
   );
