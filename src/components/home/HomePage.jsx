@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
 import { Header } from "../layout/Header";
 import { Footer } from "../layout/Footer";
 import { HeroSection } from "./HeroSection";
@@ -9,6 +8,7 @@ import { ProductCard } from "./ProductCard";
 import { Newsletter } from "./Newsletter";
 import { useState, useEffect } from "react";
 import axios from "axios";
+
 
 const categories = [
   {
@@ -32,6 +32,7 @@ const baseUrl = "http://localhost:5000/api/";
 export function HomePage() {
   const [products, setProducts] = useState();
 
+
   useEffect(() => {
     async function getProducts() {
       const data = await axios.get(`${baseUrl}products`);
@@ -40,13 +41,19 @@ export function HomePage() {
     getProducts();
   }, []);
 
+ 
+
+
+
   console.log("products", products);
 
   return (
     <main>
-      <Header />
+      <Header/>
+    
+      
       <HeroSection />
-
+    
       <section className="flex flex-col items-center px-16 w-full bg-white max-md:px-5 max-md:max-w-full">
         <div className="w-full max-w-[1120px] max-md:max-w-full">
           <div className="flex gap-5 max-md:flex-col">
