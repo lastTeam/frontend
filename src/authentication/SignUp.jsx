@@ -10,6 +10,7 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [id , setId] = useState ()
   const navigate = useNavigate();
 
   const handleSignUp = async () => {
@@ -18,19 +19,20 @@ const Signup = () => {
       return;
     }
 
-   
+   const user =  {
+    
+    "firstName":firstName,
+    "lastName":lastName,
+    "username":userName,
+    "email":email ,
+    "password":password,
+    "roles": role
+  }
 
     try {
-      const response = await axios.post("http://127.0.0.1:5000/api/signup", {
-        "firstName":firstName,
-        "lastName":lastName,
-        "username":userName,
-        "email":email ,
-        "password":password,
-        "roles": role
-      });
-      console.log(response);
-      
+      const response = await axios.post("http://127.0.0.1:5000/api/signup",user);
+      console.log(response.data , 'ok');
+      setId(response.data.id)
       navigate("/home");
     } catch (error) {
       setErrorMessage("Error during sign up. Please try again.");
