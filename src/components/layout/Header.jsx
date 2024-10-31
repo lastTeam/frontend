@@ -1,14 +1,26 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons"; // Import the cart icon
+import { useNavigate } from "react-router-dom";
 
 export function Header() {
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearchResults = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const handlesearch = async () => {
+    if (search) {
+      navigate(`/search/${search}`);
+    }
+  };
+
   return (
     <header>
       <div
         className="flex flex-wrap gap-10 justify-end py-2 pr-4 pl-20 w-full text-sm max-md:pl-5 max-md:max-w-full"
-        style={{ backgroundColor: "#EBBE43" }} // Updated background color
+        style={{ backgroundColor: "#EBBE43" }}
       >
         <div className="flex gap-3">
           <img
@@ -19,7 +31,7 @@ export function Header() {
           />
           <p
             className="font-semibold leading-loose text-center basis-auto"
-            style={{ color: "white" }} // Text color updated to white
+            style={{ color: "white" }}
           >
             30% off storewide — Limited time!
           </p>
@@ -33,12 +45,12 @@ export function Header() {
       </div>
       <nav
         className="flex flex-wrap gap-10 justify-between items-center px-40 py-4 w-full max-md:px-5 max-md:max-w-full"
-        style={{ backgroundColor: "#EBBE43" }} // Updated background color
+        style={{ backgroundColor: "#EBBE43" }}
       >
         <Link
           to="/"
           className="self-stretch my-auto text-2xl font-medium leading-none text-center"
-          style={{ color: "white" }} // Brand name color updated to white
+          style={{ color: "white" }}
         >
           Crafty<span className="text-white">.</span>
         </Link>
@@ -50,7 +62,7 @@ export function Header() {
               className={`flex gap-0.5 items-center self-stretch my-auto whitespace-nowrap ${
                 item === "Home" ? "text-white" : ""
               }`}
-              style={{ color: "white" }} // Links color updated to white
+              style={{ color: "white" }}
             >
               {item}
             </Link>
@@ -61,12 +73,14 @@ export function Header() {
           <input
             type="text"
             placeholder="Search..."
+            onChange={handleSearchResults}
             className="p-2 border border-gray-300 rounded"
-            style={{ minWidth: "200px" }} // You can adjust the width as needed
+            style={{ minWidth: "200px" }}
           />
           <button
             aria-label="Search"
             className="absolute right-0 top-0 bottom-0 flex items-center justify-center p-2 bg-white border-l border-gray-300 rounded-r"
+            onClick={handlesearch}
           >
             <img
               loading="lazy"
@@ -75,30 +89,6 @@ export function Header() {
               className="w-4 h-4"
             />
           </button>
-        </div>
-        <div className="flex gap-4 items-center self-stretch my-auto">
-          <Link
-            to="/account"
-            aria-label="Account"
-            className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square"
-          >
-            <img
-              loading="lazy"
-              src="https://cdn.builder.io/api/v1/image/assets/9ae4fe26caea4ec4b922b3cd752ddc12/d8ac2af4fe98d3962e7216f1d3a4f909c949da16f51206d4e6f2839c71acdc86?apiKey=9ae4fe26caea4ec4b922b3cd752ddc12&"
-              alt="Account Icon"
-            />
-          </Link>
-          <Link
-            to="/cart"
-            aria-label="Cart"
-            className="flex shrink-0 self-stretch my-auto h-7 w-[50px]"
-          >
-            <FontAwesomeIcon
-              icon={faCartShopping}
-              className="w-6 h-6 text-white"
-            />{" "}
-            {/* Use FontAwesomeIcon here */}
-          </Link>
         </div>
       </nav>
     </header>

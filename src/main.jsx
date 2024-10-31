@@ -8,6 +8,7 @@ import "./index.css";
 import ProductDetails from "./components/ProductDetails ";
 import { CartProvider } from "./components/home/CartContext"; // Import the CartProvider
 import Cart from "./components/home/Cart.jsx";
+import SearchResults from "./components/SearchByTitle.jsx";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,7 @@ const router = createBrowserRouter([
     element: <ProductDetails />,
   },
   { path: "/cart", element: <Cart /> },
+  { path: "search/:title", element: <SearchResults /> },
 ]);
 
 createRoot(document.getElementById("root")).render(
