@@ -8,6 +8,7 @@ import { Newsletter } from "./Newsletter";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+
 const categories = [
   {
     title: "Tunisian Arts",
@@ -32,6 +33,7 @@ export function HomePage() {
   const [sortedProducts, setSortedProducts] = useState([]);
   const [isSorted, setIsSorted] = useState(false);
 
+
   useEffect(() => {
     async function getProducts() {
       const data = await axios.get(`${baseUrl}products`);
@@ -40,6 +42,10 @@ export function HomePage() {
     }
     getProducts();
   }, []);
+
+ 
+
+
 
   console.log("products", products);
   const handleSortByPrice = (isDescending) => {
@@ -56,7 +62,7 @@ export function HomePage() {
     <main>
       <Header onSortByPrice={handleSortByPrice} />
       <HeroSection />
-
+    
       <section className="flex flex-col items-center px-16 w-full bg-white max-md:px-5 max-md:max-w-full">
         <div className="w-full max-w-[1120px] max-md:max-w-full">
           <div className="flex gap-5 max-md:flex-col">
