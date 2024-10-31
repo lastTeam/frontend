@@ -33,13 +33,13 @@ export function ProductCard({ product }) {
           </button>
         </div>
       </div>
-      
+
       {/* Product Information */}
       <div className="flex flex-col mt-3 min-h-[72px]">
         <h3 className="self-stretch mt-1 text-base font-semibold leading-tight text-neutral-900">
           {title}
         </h3>
-        
+
         {/* Pricing with Discount Check */}
         <div className="flex items-center gap-2 mt-1 text-sm leading-tight">
           {discountPrice ? (
@@ -55,13 +55,13 @@ export function ProductCard({ product }) {
             <span className="font-semibold text-neutral-900">D{basePrice}</span>
           )}
         </div>
-        
+
         {/* Description */}
         <div className="mt-1 text-sm leading-tight text-neutral-700 line-clamp-2">
           {description}
         </div>
       </div>
-      
+
       {/* Product Details Button with Link */}
       <Link to={`/products/${id}`}>
         <button className="mt-4 mb-2 px-6 py-2.5 text-base font-medium tracking-tight leading-7 text-white rounded-lg shadow-lg bg-[#EBBE43] hover:bg-[#D4A833] transition-colors duration-300">
