@@ -6,6 +6,7 @@ function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
+
   useEffect(() => {
     // Fetch the product data by ID
     fetch(`http://localhost:5000/api/products/${productId}`)
