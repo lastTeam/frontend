@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../components/home/CartContext.jsx"; // Add this import
 
 const Signup = () => {
   const [firstName, setFirstName] = useState("");
@@ -11,6 +12,7 @@ const Signup = () => {
   const [role, setRole] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const { setUserId } = useCart(); // Get setUserId from context
 
   const handleSignUp = async () => {
     if (!userName || !email || !password) {
@@ -18,19 +20,17 @@ const Signup = () => {
       return;
     }
 
-   
-
     try {
       const response = await axios.post("http://127.0.0.1:5000/api/signup", {
-        "firstName":firstName,
-        "lastName":lastName,
-        "username":userName,
-        "email":email ,
-        "password":password,
-        "roles": role
+        firstName: firstName,
+        lastName: lastName,
+        username: userName,
+        email: email,
+        password: password,
+        roles: role,
       });
-      console.log(response);
-      
+
+      setUserId(response.data.id); // Store the user ID in context
       navigate("/home");
     } catch (error) {
       setErrorMessage("Error during sign up. Please try again.");
@@ -53,7 +53,7 @@ const Signup = () => {
         <p className="mb-6 text-center text-gray-600 dark:text-gray-400">
           Create an account to explore our amazing features.
         </p>
-        
+
         <div className="grid grid-cols-2 gap-4">
           <input
             type="text"
@@ -98,9 +98,11 @@ const Signup = () => {
             className="px-4 py-3 border border-gray-300 bg-gray-100 text-gray-800 placeholder-gray-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 placeholder-gray-400 transition-colors focus:border-indigo-500 focus:outline-0 focus:ring focus:ring-indigo-200 dark:focus:ring-indigo-500"
           />
         </div>
-        
+
         {errorMessage && (
-          <div className="text-red-500 text-sm text-center mt-4">{errorMessage}</div>
+          <div className="text-red-500 text-sm text-center mt-4">
+            {errorMessage}
+          </div>
         )}
 
         <button
