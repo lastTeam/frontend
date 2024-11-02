@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../components/home/CartContext.jsx"; // Add this import
+import { useCart } from "../components/home/CartContext.jsx";
 
 const Signup = () => {
   const [firstName, setFirstName] = useState("");
@@ -12,7 +12,7 @@ const Signup = () => {
   const [role, setRole] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-  const { setUserId } = useCart(); // Get setUserId from context
+  const { setUserId } = useCart();
 
   const handleSignUp = async () => {
     if (!userName || !email || !password) {
@@ -30,7 +30,7 @@ const Signup = () => {
         roles: role,
       });
 
-      setUserId(response.data.id); // Store the user ID in context
+      setUserId(response.data.id);
       navigate("/home");
     } catch (error) {
       setErrorMessage("Error during sign up. Please try again.");
@@ -40,77 +40,108 @@ const Signup = () => {
 
   return (
     <div
-      className="relative flex items-center justify-center min-h-screen bg-cover bg-center backdrop-blur-sm"
+      className="min-h-[600px] flex justify-center items-center p-4 relative"
       style={{
         backgroundImage:
-          "url('https://static.vecteezy.com/system/resources/thumbnails/036/595/006/small_2x/ai-generated-craft-shop-advertisment-background-with-copy-space-free-photo.jpg')",
+          "url('https://i.pinimg.com/236x/4f/fd/9b/4ffd9be517c945762cfc0968bb6844e8.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="bg-white bg-opacity-80 p-8 rounded shadow-lg max-w-md w-full mx-auto">
-        <h1 className="mb-8 text-2xl font-bold text-center text-gray-800 dark:text-white">
-          Crafty
-        </h1>
-        <p className="mb-6 text-center text-gray-600 dark:text-gray-400">
-          Create an account to explore our amazing features.
-        </p>
+      {/* Blur overlay */}
+      <div className="absolute inset-0 backdrop-blur-[8px] bg-black/30" />
 
-        <div className="grid grid-cols-2 gap-4">
-          <input
-            type="text"
-            placeholder="First Name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            className="px-4 py-3 border border-gray-300 bg-gray-100 text-gray-800 placeholder-gray-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 placeholder-gray-400 transition-colors focus:border-indigo-500 focus:outline-0 focus:ring focus:ring-indigo-200 dark:focus:ring-indigo-500"
-          />
-          <input
-            type="text"
-            placeholder="Last Name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            className="px-4 py-3 border border-gray-300 bg-gray-100 text-gray-800 placeholder-gray-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 placeholder-gray-400 transition-colors focus:border-indigo-500 focus:outline-0 focus:ring focus:ring-indigo-200 dark:focus:ring-indigo-500"
-          />
-          <input
-            type="text"
-            placeholder="Username"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            className="px-4 py-3 border border-gray-300 bg-gray-100 text-gray-800 placeholder-gray-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 placeholder-gray-400 transition-colors focus:border-indigo-500 focus:outline-0 focus:ring focus:ring-indigo-200 dark:focus:ring-indigo-500"
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="px-4 py-3 border border-gray-300 bg-gray-100 text-gray-800 placeholder-gray-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 placeholder-gray-400 transition-colors focus:border-indigo-500 focus:outline-0 focus:ring focus:ring-indigo-200 dark:focus:ring-indigo-500"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="px-4 py-3 border border-gray-300 bg-gray-100 text-gray-800 placeholder-gray-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 placeholder-gray-400 transition-colors focus:border-indigo-500 focus:outline-0 focus:ring focus:ring-indigo-200 dark:focus:ring-indigo-500"
-          />
-          <input
-            type="text"
-            placeholder="seller/user"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="px-4 py-3 border border-gray-300 bg-gray-100 text-gray-800 placeholder-gray-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 placeholder-gray-400 transition-colors focus:border-indigo-500 focus:outline-0 focus:ring focus:ring-indigo-200 dark:focus:ring-indigo-500"
+      {/* Main content container */}
+      <div className="flex max-w-5xl w-full bg-white/95 rounded-lg shadow-2xl overflow-hidden relative z-10">
+        {/* Left side - Image */}
+        <div className="w-1/2">
+          <img
+            src="https://i.pinimg.com/236x/ff/dc/cb/ffdccb06ea6b7ccc6e7ffd4038f8770d.jpg"
+            alt="Craft"
+            className="w-full h-[600px] object-cover"
           />
         </div>
 
-        {errorMessage && (
-          <div className="text-red-500 text-sm text-center mt-4">
-            {errorMessage}
-          </div>
-        )}
+        {/* Right side - Signup Form */}
+        <div className="w-1/2 p-8 backdrop-blur-sm bg-white/50">
+          <div className="max-w-md mx-auto">
+            <h1
+              className="text-3xl font-bold text-center mb-4"
+              style={{ color: "#EBBE43" }}
+            >
+              Crafty
+            </h1>
+            <p className="text-center text-gray-700 mb-6 font-medium">
+              Create an account to explore our amazing features.
+            </p>
 
-        <button
-          onClick={handleSignUp}
-          className="w-full mt-6 lqd-btn font-medium rounded-full bg-indigo-600 text-white hover:bg-indigo-500 focus-visible:bg-indigo-700 focus-visible:shadow-indigo-300/10 px-5 py-3 transition-all"
-        >
-          Sign Up
-        </button>
+            <div className="space-y-3">
+              <div className="flex gap-3">
+                <input
+                  type="text"
+                  placeholder="First Name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="w-1/2 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EBBE43] bg-white/90"
+                />
+                <input
+                  type="text"
+                  placeholder="Last Name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="w-1/2 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EBBE43] bg-white/90"
+                />
+              </div>
+
+              <input
+                type="text"
+                placeholder="Username"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EBBE43] bg-white/90"
+              />
+
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EBBE43] bg-white/90"
+              />
+
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EBBE43] bg-white/90"
+              />
+
+              <input
+                type="text"
+                placeholder="seller/user"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EBBE43] bg-white/90"
+              />
+            </div>
+
+            {errorMessage && (
+              <div className="text-red-500 text-sm text-center mt-3">
+                {errorMessage}
+              </div>
+            )}
+
+            <button
+              onClick={handleSignUp}
+              className="w-full mt-6 py-2.5 rounded-lg text-white font-medium transition-all hover:opacity-90 shadow-lg"
+              style={{ backgroundColor: "#EBBE43" }}
+            >
+              Sign Up
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
