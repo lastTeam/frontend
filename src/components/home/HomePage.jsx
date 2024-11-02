@@ -8,7 +8,6 @@ import { Newsletter } from "./Newsletter";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-
 const categories = [
   {
     title: "Tunisian Arts",
@@ -31,8 +30,6 @@ const baseUrl = "http://localhost:5000/api/";
 export function HomePage() {
   const [products, setProducts] = useState([]);
   const [sortedProducts, setSortedProducts] = useState([]);
-  const [isSorted, setIsSorted] = useState(false);
-
 
   useEffect(() => {
     async function getProducts() {
@@ -43,26 +40,21 @@ export function HomePage() {
     getProducts();
   }, []);
 
- 
-
-
-
   console.log("products", products);
   const handleSortByPrice = (isDescending) => {
-    // Toggle sorting only when the filter button is clicked
+    const clonedProducts = [...products]; // Avoid reference sharing
     const sorted = isDescending
-      ? [...products].sort((a, b) => b.basePrice - a.basePrice)
-      : [...products].sort((a, b) => a.basePrice - b.basePrice);
+      ? clonedProducts.sort((a, b) => b.basePrice - a.basePrice)
+      : clonedProducts.sort((a, b) => a.basePrice - b.basePrice);
 
     setSortedProducts(sorted);
-    setIsSorted(true); // Mark sorting as applied
   };
 
   return (
     <main>
       <Header onSortByPrice={handleSortByPrice} />
       <HeroSection />
-    
+
       <section className="flex flex-col items-center px-16 w-full bg-white max-md:px-5 max-md:max-w-full">
         <div className="w-full max-w-[1120px] max-md:max-w-full">
           <div className="flex gap-5 max-md:flex-col">
@@ -99,9 +91,10 @@ export function HomePage() {
         </div>
         <div className="flex flex-wrap gap-6 self-end mt-12 max-md:mt-10">
           {sortedProducts?.map((product) => (
-            <ProductCard key={product.title} product={product} />
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
+
         <div className="flex flex-col items-start mt-12 max-w-full bg-gray-200 rounded-[80px] w-[1120px] max-md:pr-5 max-md:mt-10">
           <div className="flex shrink-0 max-w-full h-1 bg-neutral-700 rounded-[80px] w-[834px]" />
         </div>
