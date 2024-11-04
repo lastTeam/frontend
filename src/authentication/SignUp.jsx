@@ -18,7 +18,7 @@ const Signup = () => {
     if (!userName || !email || !password || !role) {
       setErrorMessage("All fields are required.");
       return;
-    }
+    } 
 
     try {
       const response = await axios.post("http://127.0.0.1:5000/api/signup", {
@@ -60,7 +60,7 @@ const Signup = () => {
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       }}
-    >
+    > 
       {/* Rest of the JSX remains the same */}
       <div className="absolute inset-0 backdrop-blur-[8px] bg-black/30" />
       <div className="flex max-w-5xl w-full bg-white/95 rounded-lg shadow-2xl overflow-hidden relative z-10">
@@ -136,7 +136,7 @@ const Signup = () => {
               >
                 <option value="">Select Role</option>
                 <option value="SELLER">Seller</option>
-                <option value="USER">User</option>
+                <option value="BUYER">Buyer</option>
               </select>
             </div>
 
