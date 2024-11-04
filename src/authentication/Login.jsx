@@ -11,7 +11,7 @@ const Login = () => {
   // In Login.jsx, modify handleLogin:
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await axios.post("http://127.0.0.1:5000/api/login", {
         email: email,
@@ -32,6 +32,7 @@ const Login = () => {
       console.error("Error during login:", error);
     }
   };
+  
 
   return (
     <div
