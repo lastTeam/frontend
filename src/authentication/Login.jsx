@@ -10,21 +10,29 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await axios.post("http://127.0.0.1:5000/api/login", {
         email: email,
         password: password,
       });
-      console.log(response.data);
-      const localStorage = response.data.token;
-      alert("Sure!");
-      navigate("/home");
+  
+      const { token, role } = response.data;
+      // Assuming response includes both `token` and `role`
+  
+      localStorage.setItem("token", token); // Store the token as needed
+  
+      if (role === "SELLER") {
+        navigate("/dashboard");
+      } else {
+        navigate("/home");
+      }
     } catch (error) {
       alert("Oooops...");
       console.error("Error during login:", error);
     }
   };
+  
 
   return (
     <div

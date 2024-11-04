@@ -15,10 +15,10 @@ const Signup = () => {
   const { setUserId } = useCart();
 
   const handleSignUp = async () => {
-    if (!userName || !email || !password) {
+    if (!userName || !email || !password || !role ) {
       setErrorMessage("All fields are required.");
       return;
-    }
+    } 
 
     try {
       const response = await axios.post("http://127.0.0.1:5000/api/signup", {
@@ -31,7 +31,13 @@ const Signup = () => {
       });
 
       setUserId(response.data.id);
-      navigate("/home");
+      if (role === "SELLER") {
+        console.log(role);
+        navigate ("/dashboard")
+      } else {
+        navigate("/home");
+      }
+     
     } catch (error) {
       setErrorMessage("Error during sign up. Please try again.");
       console.error("Error during sign up:", error);
