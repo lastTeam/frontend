@@ -8,6 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  // In Login.jsx, modify handleLogin:
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -16,10 +17,16 @@ const Login = () => {
         email: email,
         password: password,
       });
-      console.log(response.data);
-      const localStorage = response.data.token;
-      alert("Sure!");
-      navigate("/home");
+
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("userId", response.data.userId);
+
+      // Redirect based on user role
+      if (response.data.role === "SELLER") {
+        navigate("/dashboard");
+      } else {
+        navigate("/home");
+      }
     } catch (error) {
       alert("Oooops...");
       console.error("Error during login:", error);
