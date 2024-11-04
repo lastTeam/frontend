@@ -8,6 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  // In Login.jsx, modify handleLogin:
   const handleLogin = async (e) => {
     e.preventDefault();
   
@@ -16,13 +17,12 @@ const Login = () => {
         email: email,
         password: password,
       });
-  
-      const { token, role } = response.data;
-      // Assuming response includes both `token` and `role`
-  
-      localStorage.setItem("token", token); // Store the token as needed
-  
-      if (role === "SELLER") {
+
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("userId", response.data.userId);
+
+      // Redirect based on user role
+      if (response.data.role === "SELLER") {
         navigate("/dashboard");
       } else {
         navigate("/home");
