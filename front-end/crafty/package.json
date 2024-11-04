@@ -1,5 +1,5 @@
 {
-  "name": "crafty",
+  "name": "react-test",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,17 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fortawesome/free-solid-svg-icons": "^6.6.0",
-    "@fortawesome/react-fontawesome": "^0.2.2",
     "axios": "^1.7.7",
-    "cloudinary": "^2.5.1",
-    "cloudinary-react": "^1.8.1",
-    "lucide-react": "^0.454.0",
+    "cors": "^2.8.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.27.0",
-    "sweetalert2": "^11.14.4",
-    "tailwind": "^4.0.0"
+    "react-router": "^6.27.0",
+    "react-router-dom": "^6.27.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",

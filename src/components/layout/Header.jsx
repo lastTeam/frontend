@@ -1,96 +1,131 @@
-import * as React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ShoppingCart, User, Search } from "lucide-react";
 
-export function Header() {
+export function Header({ onSortByPrice }) {
+  const [isDescending, setIsDescending] = React.useState(true);
+  const [search, setSearch] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSortClick = () => {
+    setIsDescending(!isDescending);
+    onSortByPrice(isDescending);
+  };
+
+  const handleSearchResults = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const handlesearch = async () => {
+    if (search) {
+      navigate(`/search/${search}`);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handlesearch();
+    }
+  };
+
   return (
     <header>
       <div
         className="flex flex-wrap gap-10 justify-end py-2 pr-4 pl-20 w-full text-sm max-md:pl-5 max-md:max-w-full"
-        style={{ backgroundColor: "#EBBE43" }} // Updated background color
-      >
-        <div className="flex gap-3">
-          <img
-            loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/9ae4fe26caea4ec4b922b3cd752ddc12/cebfcb5e4788737dcb6dc75251bba3ca921ac5d4f139f9f21b869fccfd6aa970?apiKey=9ae4fe26caea4ec4b922b3cd752ddc12&"
-            alt=""
-            className="object-contain shrink-0 w-6 aspect-square"
-          />
-          <p
-            className="font-semibold leading-loose text-center basis-auto"
-            style={{ color: "white" }} // Text color updated to white
-          >
-            30% off storewide — Limited time!
-          </p>
-        </div>
-        <img
-          loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/9ae4fe26caea4ec4b922b3cd752ddc12/9db746d8b5575526a41c45b10725275eef92574e4d17be77ccb1333262efaf28?apiKey=9ae4fe26caea4ec4b922b3cd752ddc12&"
-          alt=""
-          className="object-contain shrink-0 my-auto w-5 aspect-square"
-        />
-      </div>
+        style={{ backgroundColor: "#EBBE43" }}
+      ></div>
       <nav
-        className="flex flex-wrap gap-10 justify-between items-center px-40 py-4 w-full max-md:px-5 max-md:max-w-full"
-        style={{ backgroundColor: "#EBBE43" }} // Updated background color
+        className="flex items-center justify-between px-20 py-4 w-full max-md:px-5 max-md:max-w-full"
+        style={{ backgroundColor: "#EBBE43" }}
       >
+        {/* Logo */}
         <Link
           to="/"
-          className="self-stretch my-auto text-2xl font-medium leading-none text-center"
-          style={{ color: "white" }} // Brand name color updated to white
+          className="text-4xl font-medium italic tracking-wider hover:scale-105 transition-transform duration-300 font-serif text-white flex-shrink-0"
         >
-          Crafty<span className="text-white">.</span>
+          Crafty<span>.</span>
         </Link>
-        <div className="flex gap-10 justify-center items-center self-stretch my-auto text-sm font-medium leading-6 min-w-[240px]">
+
+        {/* Navigation Links */}
+        <div className="flex items-center gap-8 ml-12">
           {["Home", "Shop", "Product", "Contact Us"].map((item) => (
             <Link
               key={item}
               to={`/${item.toLowerCase().replace(" ", "-")}`}
-              className={`flex gap-0.5 items-center self-stretch my-auto whitespace-nowrap ${
-                item === "Home" ? "text-white" : ""
-              }`}
-              style={{ color: "white" }} // Links color updated to white
+              className={`text-base font-medium whitespace-nowrap transform hover:-translate-y-1 hover:scale-110 transition-all duration-300 ease-in-out text-white`}
             >
               {item}
             </Link>
           ))}
         </div>
-        {/* Search Bar */}
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="p-2 border border-gray-300 rounded"
-            style={{ minWidth: "200px" }} // You can adjust the width as needed
-          />
+
+        {/* Right Section: Search, Sort, and Icons */}
+        <div className="flex items-center gap-6 ml-auto">
+          {/* Enhanced Search Bar */}
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={search}
+              onChange={handleSearchResults}
+              onKeyPress={handleKeyPress}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              className={`w-64 py-2 px-4 pr-12 rounded-full bg-white/90 backdrop-blur-sm border-2 
+                transition-all duration-300 ease-in-out
+                ${
+                  isFocused
+                    ? "w-80 border-white shadow-lg bg-white"
+                    : "border-transparent"
+                } 
+                placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50`}
+            />
+            <button
+              aria-label="Search"
+              onClick={handlesearch}
+              className={`absolute right-3 top-1/2 -translate-y-1/2 
+                p-1.5 rounded-full transition-all duration-300 ease-in-out
+                ${isFocused ? "bg-[#EBBE43] text-white" : "text-gray-400"}
+                hover:bg-[#D4A833] hover:text-white`}
+            >
+              <Search className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Sort Button */}
           <button
-            aria-label="Search"
-            className="absolute right-0 top-0 bottom-0 flex items-center justify-center p-2 bg-white border-l border-gray-300 rounded-r"
+            onClick={handleSortClick}
+            className="px-4 py-2 text-sm font-semibold text-white transition duration-300 transform bg-[#EBBE43] rounded-lg shadow-md hover:bg-[#D4A833] hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D4A833] flex items-center gap-2"
           >
             <img
-              loading="lazy"
               src="https://cdn.builder.io/api/v1/image/assets/9ae4fe26caea4ec4b922b3cd752ddc12/74d610171b49cc3b18b456fe06d02bff2a8f09126ee10249b3afcbc71e046e51?apiKey=9ae4fe26caea4ec4b922b3cd752ddc12&"
-              alt="Search Icon"
+              alt="Sort Icon"
               className="w-4 h-4"
             />
+            {isDescending ? "Sort: High to Low" : "Sort: Low to High"}
           </button>
-        </div>
-        <div className="flex gap-4 items-center self-stretch my-auto">
+
+          {/* Account Icon */}
           <button
             aria-label="Account"
-            className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square"
+            className="flex items-center justify-center hover:scale-110 transition-transform duration-300"
           >
-            <img
-              loading="lazy"
-              src="https://cdn.builder.io/api/v1/image/assets/9ae4fe26caea4ec4b922b3cd752ddc12/d8ac2af4fe98d3962e7216f1d3a4f909c949da16f51206d4e6f2839c71acdc86?apiKey=9ae4fe26caea4ec4b922b3cd752ddc12&"
-              alt=""
-            />
+            <User className="w-6 h-6 text-white" />
           </button>
+
+          {/* Cart Icon */}
           <button
             aria-label="Cart"
-            className="flex shrink-0 self-stretch my-auto h-7 w-[50px]"
-          />
+            onClick={() => navigate("/cart")}
+            className="flex items-center justify-center hover:scale-110 transition-transform duration-300"
+          >
+            <ShoppingCart className="w-6 h-6 text-white" />
+          </button>
         </div>
       </nav>
     </header>
   );
 }
+
+export default Header;
