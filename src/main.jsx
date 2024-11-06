@@ -10,6 +10,7 @@ import { CartProvider } from "./components/home/CartContext"; // Import the Cart
 import Cart from "./components/home/Cart.jsx";
 import SearchResults from "./components/SearchByTitle.jsx";
 import Dashboard from "./components/home/Dashboard.jsx";
+import OrderComponent from "./components/Order.jsx";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
     element: <ProductDetails />,
   },
   { path: "/cart", element: <Cart /> },
+  { path: "/checkout", element: <OrderComponent /> },
   { path: "search/:title", element: <SearchResults /> },
   {
     path: "/dashboard",
