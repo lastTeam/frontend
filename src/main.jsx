@@ -11,7 +11,7 @@ import Cart from "./components/home/Cart.jsx";
 import SearchResults from "./components/SearchByTitle.jsx";
 import Dashboard from "./components/home/Dashboard.jsx";
 import Wishlist from "./components/home/Wishlist.jsx";
-
+import AdminDashboard from "./components/home/AdminDashboard.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -38,6 +38,10 @@ const router = createBrowserRouter([
   {
     path: "/wishlist", //
     element: <Wishlist />,
+  },
+  {
+    path: "/admin",
+    element: <AdminDashboard />,
   },
 ]);
 
