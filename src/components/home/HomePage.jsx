@@ -180,6 +180,7 @@ export function HomePage() {
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
+
         <div className="flex flex-col items-start mt-12 max-w-full bg-gray-200 rounded-[80px] w-[1120px] max-md:pr-5 max-md:mt-10">
           <div className="flex shrink-0 max-w-full h-1 bg-neutral-700 rounded-[80px] w-[834px]" />
         </div>
