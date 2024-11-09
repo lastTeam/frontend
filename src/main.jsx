@@ -5,13 +5,13 @@ import Login from "./authentication/Login.jsx";
 import Signup from "./authentication/SignUp.jsx";
 import HomePage from "./components/home/HomePage.jsx";
 import "./index.css";
-import ProductDetails from "./components/ProductDetails .jsx";
+import ProductDetails from "./components/ProductDetails.jsx";
 import { CartProvider } from "./components/home/CartContext";
 import Cart from "./components/home/Cart.jsx";
 import SearchResults from "./components/SearchByTitle.jsx";
 import Dashboard from "./components/home/Dashboard.jsx";
 import Chat from "./components/Chat.jsx";
-
+import Wishlist from "./components/home/Wishlist.jsx";
 
 const router = createBrowserRouter([
   {
@@ -43,9 +43,11 @@ const router = createBrowserRouter([
     element: <Dashboard />,
   },
   {
-    path: "/chat",
-    element: <Chat />,
+    path: "/chat", element: <Chat />,
+    
   },
+  {path: "/wishlist",
+    element: <Wishlist />,}
 ]);
 
 createRoot(document.getElementById("root")).render(

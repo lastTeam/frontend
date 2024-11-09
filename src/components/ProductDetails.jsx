@@ -11,7 +11,6 @@ function ProductDetails() {
   const [error, setError] = useState(null);
   const { addToCart, cartItems, userId } = useCart();
 
-
   useEffect(() => {
     fetch(`http://localhost:5000/api/products/${productId}`)
       .then((response) => response.json())
