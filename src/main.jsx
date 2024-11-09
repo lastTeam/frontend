@@ -10,8 +10,9 @@ import { CartProvider } from "./components/home/CartContext"; // Import the Cart
 import Cart from "./components/home/Cart.jsx";
 import SearchResults from "./components/SearchByTitle.jsx";
 import Dashboard from "./components/home/Dashboard.jsx";
+import Order from "./components/Order.jsx";
 import Wishlist from "./components/home/Wishlist.jsx";
-
+import AdminDashboard from "./components/home/AdminDashboard.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -30,14 +31,19 @@ const router = createBrowserRouter([
     element: <ProductDetails />,
   },
   { path: "/cart", element: <Cart /> },
+  { path: "/checkout", element: <Order /> },
   { path: "search/:title", element: <SearchResults /> },
   {
     path: "/dashboard",
     element: <Dashboard />,
   },
   {
-    path: "/wishlist", //
+    path: "/wishlist", 
     element: <Wishlist />,
+  },
+  {
+    path: "/admin",
+    element: <AdminDashboard />,
   },
 ]);
 

@@ -3,27 +3,65 @@ import axios from "axios";
 import { ProductCard } from "./ProductCard";
 import { Header } from "../layout/Header";
 import { Footer } from "../layout/Footer";
+import { toast } from 'react-hot-toast';
 
 export function Wishlist() {
   const [wishlistItems, setWishlistItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const userId = "1"; // Replace with actual user ID from your auth system
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
+    if (!userId || !token) {
+      setLoading(false);
+      toast.error('Please login to view your wishlist');
+      return;
+    }
     fetchWishlist();
-  }, []);
+  }, [userId, token]);
 
   const fetchWishlist = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/users/${userId}/wishlist`
+        `http://localhost:5000/api/users/${userId}/wishlist`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        }
       );
-      setWishlistItems(response.data.wishlist);
+      
+      if (response.data && response.data.wishlist) {
+        // Ensure all necessary product data is present
+        const completeWishlistItems = response.data.wishlist.map(item => ({
+          ...item,
+          id: typeof item.id === 'string' ? parseInt(item.id) : item.id,
+          images: item.images || [],
+          title: item.title || 'Untitled Product',
+          basePrice: item.basePrice || 0,
+          description: item.description || '',
+          discountPrice: item.discountPrice || null
+        }));
+        setWishlistItems(completeWishlistItems);
+      }
       setLoading(false);
     } catch (error) {
       console.error("Error fetching wishlist:", error);
+      if (error.response?.status === 401) {
+        localStorage.removeItem('userId');
+        localStorage.removeItem('token');
+        toast.error('Please login again');
+      } else {
+        toast.error('Error loading wishlist');
+      }
       setLoading(false);
     }
+  };
+
+  // Add a refresh handler that can be passed to ProductCard
+  const handleWishlistUpdate = () => {
+    fetchWishlist();
   };
 
   return (
@@ -35,7 +73,11 @@ export function Wishlist() {
             My Wishlist
           </h1>
 
-          {loading ? (
+          {!userId || !token ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">Please login to view your wishlist</p>
+            </div>
+          ) : loading ? (
             <div className="flex justify-center items-center min-h-[400px]">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#EBBE43]"></div>
             </div>
@@ -46,7 +88,11 @@ export function Wishlist() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {wishlistItems.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard 
+                  key={product.id} 
+                  product={product}
+                  onWishlistUpdate={handleWishlistUpdate} 
+                />
               ))}
             </div>
           )}
