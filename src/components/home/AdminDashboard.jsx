@@ -1,409 +1,344 @@
-import React, { useState, useEffect } from "react";
-import {
-  Plus,
-  Pencil,
-  Trash2,
-  Search,
-  X,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import { Users, Package, ShoppingCart, Grid, Trash2, Edit } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import axios from 'axios';
 
 const AdminDashboard = () => {
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalProducts: 0,
+    totalOrders: 0,
+    totalCategories: 0
+  });
+  const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState(null);
-  const [page, setPage] = useState(1);
-  const itemsPerPage = 10;
+  const [activeView, setActiveView] = useState('dashboard');
+  const [statsHistory, setStatsHistory] = useState([]);
 
-  // Form state
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    sku: "",
-    basePrice: "",
-    discountPrice: "",
-    categoryId: "",
-    images: [],
-    colors: {},
-    variants: {},
-  });
+  const fetchDashboardData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      // Get Users
+      const usersResponse = await axios.get('http://127.0.0.1:5000/api/admin/users', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // Get Stats
+      const statsResponse = await axios.get('http://127.0.0.1:5000/api/admin/dashboard-stats', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      // Get Products if in products view
+      if (activeView === 'products') {
+        const productsResponse = await axios.get('http://127.0.0.1:5000/api/products', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setProducts(productsResponse.data.products);
+      }
+
+      // Mock stats history - replace with actual API data when available
+      const mockStatsHistory = [
+        { month: 'Jan', users: 120, products: 50, orders: 80 },
+        { month: 'Feb', users: 150, products: 65, orders: 95 },
+        { month: 'Mar', users: 180, products: 75, orders: 120 },
+        { month: 'Apr', users: 220, products: 90, orders: 150 },
+        { month: 'May', users: 250, products: 100, orders: 180 },
+      ];
+      
+      setStatsHistory(mockStatsHistory);
+      setStats(statsResponse.data.stats);
+      setUsers(usersResponse.data.users);
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    fetchDashboardData();
+  }, [activeView]);
 
-  const fetchProducts = async () => {
+  const handleDeleteUser = async (userId) => {
+    if (!window.confirm('Are you sure you want to delete this user?')) return;
+
     try {
-      const response = await axios.get("http://localhost:5000/api/products");
-      setProducts(response.data.products);
-      setLoading(false);
+      const token = localStorage.getItem('token');
+      const response = await axios.delete(`http://127.0.0.1:5000/api/admin/users/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.status === 200) {
+        setUsers(users.filter(user => user.id !== userId));
+        fetchDashboardData();
+      }
     } catch (error) {
-      console.error("Error fetching products:", error);
-      setLoading(false);
+      console.error('Error deleting user:', error);
+      alert('Error deleting user');
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleDeleteProduct = async (productId) => {
+    if (!window.confirm('Are you sure you want to delete this product?')) return;
+
     try {
-      if (currentProduct) {
-        await axios.put(
-          `http://localhost:5000/api/products/${currentProduct.id}`,
-          formData
-        );
-      } else {
-        await axios.post("http://localhost:5000/api/products", {
-          ...formData,
-          ownerId: 1,
-        });
+      const token = localStorage.getItem('token');
+      const response = await axios.delete(`http://127.0.0.1:5000/api/products/${productId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.status === 200) {
+        setProducts(products.filter(product => product.id !== productId));
+        fetchDashboardData();
       }
-      fetchProducts();
-      setShowModal(false);
-      resetForm();
     } catch (error) {
-      console.error("Error saving product:", error);
+      console.error('Error deleting product:', error);
+      alert('Error deleting product');
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      try {
-        await axios.delete(`http://localhost:5000/api/products/${id}`);
-        fetchProducts();
-      } catch (error) {
-        console.error("Error deleting product:", error);
-      }
-    }
-  };
+  const StatisticsChart = () => {
+    const pieData = [
+      { name: 'Users', value: stats.totalUsers, color: '#EBBE43' },
+      { name: 'Products', value: stats.totalProducts, color: '#82ca9d' },
+      { name: 'Orders', value: stats.totalOrders, color: '#8884d8' },
+    ];
 
-  const handleEdit = (product) => {
-    setCurrentProduct(product);
-    setFormData({
-      title: product.title,
-      description: product.description,
-      sku: product.sku,
-      basePrice: product.basePrice,
-      discountPrice: product.discountPrice || "",
-      categoryId: product.categoryId,
-      images: product.images || [],
-      colors: product.colors || {},
-      variants: product.variants || {},
-    });
-    setShowModal(true);
-  };
-
-  const resetForm = () => {
-    setCurrentProduct(null);
-    setFormData({
-      title: "",
-      description: "",
-      sku: "",
-      basePrice: "",
-      discountPrice: "",
-      categoryId: "",
-      images: [],
-      colors: {},
-      variants: {},
-    });
-  };
-
-  const filteredProducts = products.filter(
-    (product) =>
-      product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.sku.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const paginatedProducts = filteredProducts.slice(
-    (page - 1) * itemsPerPage,
-    page * itemsPerPage
-  );
-
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-
-  return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">
-            Product Management
-          </h1>
-          <button
-            onClick={() => {
-              resetForm();
-              setShowModal(true);
-            }}
-            className="flex items-center gap-2 px-4 py-2 bg-[#EBBE43] text-white rounded-lg hover:bg-[#D4A833] transition-colors duration-300"
-          >
-            <Plus size={20} />
-            Add Product
-          </button>
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 rounded-lg shadow mb-8">
+        {/* Pie Chart */}
+        <div className="h-80">
+          <h2 className="text-xl font-semibold mb-4 text-[#EBBE43]">Distribution Statistics</h2>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={pieData}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={80}
+                paddingAngle={5}
+                dataKey="value"
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+              >
+                {pieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="relative flex-1">
-              <Search
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                size={20}
-              />
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EBBE43]"
-              />
-            </div>
+        {/* Line Chart */}
+        <div className="h-80">
+          <h2 className="text-xl font-semibold mb-4 text-[#EBBE43]">Growth Statistics</h2>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={statsHistory}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="users" stroke="#EBBE43" name="Users" />
+              <Line type="monotone" dataKey="products" stroke="#82ca9d" name="Products" />
+              <Line type="monotone" dataKey="orders" stroke="#8884d8" name="Orders" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    );
+  };
+
+  const StatsCards = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div 
+        className="bg-white p-6 rounded-lg shadow cursor-pointer hover:bg-gray-50"
+        onClick={() => setActiveView('dashboard')}
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-gray-500">Total Users</p>
+            <p className="text-2xl font-bold">{stats.totalUsers}</p>
           </div>
-
-          {loading ? (
-            <div className="text-center py-8">Loading...</div>
-          ) : (
-            <>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="px-4 py-3 text-left">Image</th>
-                      <th className="px-4 py-3 text-left">Title</th>
-                      <th className="px-4 py-3 text-left">SKU</th>
-                      <th className="px-4 py-3 text-left">Price</th>
-                      <th className="px-4 py-3 text-left">Category</th>
-                      <th className="px-4 py-3 text-left">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {paginatedProducts.map((product) => (
-                      <tr
-                        key={product.id}
-                        className="border-b border-gray-200 hover:bg-gray-50"
-                      >
-                        <td className="px-4 py-3">
-                          <img
-                            src={product.images[0] || "/api/placeholder/48/48"}
-                            alt={product.title}
-                            className="w-12 h-12 object-cover rounded"
-                          />
-                        </td>
-                        <td className="px-4 py-3">{product.title}</td>
-                        <td className="px-4 py-3">{product.sku}</td>
-                        <td className="px-4 py-3">
-                          {product.discountPrice ? (
-                            <div>
-                              <span className="line-through text-gray-400">
-                                D{product.basePrice}
-                              </span>
-                              <span className="ml-2">
-                                D{product.discountPrice}
-                              </span>
-                            </div>
-                          ) : (
-                            <span>D{product.basePrice}</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3">{product.category?.name}</td>
-                        <td className="px-4 py-3">
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => handleEdit(product)}
-                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
-                            >
-                              <Pencil size={16} />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(product.id)}
-                              className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="flex justify-between items-center mt-6">
-                <div className="text-sm text-gray-600">
-                  Showing {(page - 1) * itemsPerPage + 1} to{" "}
-                  {Math.min(page * itemsPerPage, filteredProducts.length)} of{" "}
-                  {filteredProducts.length} products
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    disabled={page === 1}
-                    className="p-2 rounded-lg border border-gray-300 disabled:opacity-50"
-                  >
-                    <ChevronLeft size={16} />
-                  </button>
-                  <button
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    disabled={page === totalPages}
-                    className="p-2 rounded-lg border border-gray-300 disabled:opacity-50"
-                  >
-                    <ChevronRight size={16} />
-                  </button>
-                </div>
-              </div>
-            </>
-          )}
+          <Users className="h-8 w-8 text-[#EBBE43]" />
+        </div>
+      </div>
+      
+      <div 
+        className="bg-white p-6 rounded-lg shadow cursor-pointer hover:bg-gray-50"
+        onClick={() => setActiveView('products')}
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-gray-500">Total Products</p>
+            <p className="text-2xl font-bold">{stats.totalProducts}</p>
+          </div>
+          <Package className="h-8 w-8 text-[#EBBE43]" />
         </div>
       </div>
 
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center p-6 border-b">
-              <h2 className="text-xl font-semibold">
-                {currentProduct ? "Edit Product" : "Add New Product"}
-              </h2>
-              <button
-                onClick={() => setShowModal(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="p-6">
-              <div className="grid grid-cols-2 gap-6">
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Title
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.title}
-                    onChange={(e) =>
-                      setFormData({ ...formData, title: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EBBE43]"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Description
-                  </label>
-                  <textarea
-                    required
-                    value={formData.description}
-                    onChange={(e) =>
-                      setFormData({ ...formData, description: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EBBE43]"
-                    rows={4}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    SKU
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.sku}
-                    onChange={(e) =>
-                      setFormData({ ...formData, sku: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EBBE43]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Category ID
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    value={formData.categoryId}
-                    onChange={(e) =>
-                      setFormData({ ...formData, categoryId: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EBBE43]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Base Price
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    value={formData.basePrice}
-                    onChange={(e) =>
-                      setFormData({ ...formData, basePrice: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EBBE43]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Discount Price
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.discountPrice}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        discountPrice: e.target.value,
-                      })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EBBE43]"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Image URLs (one per line)
-                  </label>
-                  <textarea
-                    value={formData.images.join("\n")}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        images: e.target.value
-                          .split("\n")
-                          .filter((url) => url.trim()),
-                      })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EBBE43]"
-                    rows={3}
-                  />
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-4 mt-6">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-300"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-[#EBBE43] text-white rounded-lg hover:bg-[#D4A833] transition-colors duration-300"
-                >
-                  {currentProduct ? "Update Product" : "Add Product"}
-                </button>
-              </div>
-            </form>
+      <div className="bg-white p-6 rounded-lg shadow">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-gray-500">Total Orders</p>
+            <p className="text-2xl font-bold">{stats.totalOrders}</p>
           </div>
+          <ShoppingCart className="h-8 w-8 text-[#EBBE43]" />
         </div>
-      )}
+      </div>
+
+      <div className="bg-white p-6 rounded-lg shadow">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-gray-500">Categories</p>
+            <p className="text-2xl font-bold">{stats.totalCategories}</p>
+          </div>
+          <Grid className="h-8 w-8 text-[#EBBE43]" />
+        </div>
+      </div>
+    </div>
+  );
+
+  const ProductsTable = () => (
+    <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold text-[#EBBE43]">Products Management</h2>
+          <button 
+            onClick={() => setActiveView('dashboard')}
+            className="px-4 py-2 bg-[#EBBE43] text-white rounded hover:bg-[#d4a93c]"
+          >
+            Back to Dashboard
+          </button>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Owner</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {products.map((product) => (
+                <tr key={product.id}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{product.title}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-500">${product.basePrice}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-500">{product.category?.name}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-500">{product.owner?.username}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => handleDeleteProduct(product.id)}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={() => alert('Edit functionality to be implemented')}
+                        className="text-blue-600 hover:text-blue-900"
+                      >
+                        <Edit className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#EBBE43]"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-100">
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-6 text-[#EBBE43]">Admin Dashboard</h1>
+        
+        <StatsCards />
+        
+        {activeView === 'dashboard' && (
+          <>
+            <StatisticsChart />
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <div className="p-6">
+                <h2 className="text-xl font-semibold mb-4 text-[#EBBE43]">Users Management</h2>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Orders</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {users.map((user) => (
+                        <tr key={user.id}>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-medium text-gray-900">
+                              {user.firstName} {user.lastName}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-500">{user.email}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-[#EBBE43] text-white">
+                              {user.roles}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {user._count?.orders || 0}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            {!user.isAdmin && (
+                              <button
+                                onClick={() => handleDeleteUser(user.id)}
+                                className="text-red-600 hover:text-red-900"
+                              >
+                                <Trash2 className="h-5 w-5" />
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {activeView === 'products' && <ProductsTable />}
+      </div>
     </div>
   );
 };
