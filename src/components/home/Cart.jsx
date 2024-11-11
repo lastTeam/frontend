@@ -180,7 +180,10 @@ const Cart = () => {
                 ${calculateTotal().toFixed(2)}
               </div>
             </div>
-            <button className="w-full bg-green-500 text-white px-8 py-4 rounded-lg hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-xl text-lg font-semibold">
+            <button
+              onClick={() => navigate("/checkout")}
+              className="w-full bg-green-500 text-white px-8 py-4 rounded-lg hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-xl text-lg font-semibold"
+            >
               Proceed to Checkout
             </button>
           </div>

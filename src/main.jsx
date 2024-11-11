@@ -10,9 +10,10 @@ import { CartProvider } from "./components/home/CartContext";
 import Cart from "./components/home/Cart.jsx";
 import SearchResults from "./components/SearchByTitle.jsx";
 import Dashboard from "./components/home/Dashboard.jsx";
-import Chat from "./components/Chat.jsx";
+import Order from "./components/Order.jsx";
 import Wishlist from "./components/home/Wishlist.jsx";
-
+import AdminDashboard from "./components/home/AdminDashboard.jsx";
+import App from "./App.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -38,16 +39,27 @@ const router = createBrowserRouter([
     path: "search/:title",
     element: <SearchResults />,
   },
+  
+  {
+     path: "/checkout", element: <Order /> 
+    },
+  
   {
     path: "/dashboard",
     element: <Dashboard />,
   },
   {
-    path: "/chat", element: <Chat />,
+    path: "/chat", element: <App />,
     
   },
-  {path: "/wishlist",
-    element: <Wishlist />,}
+  {
+    path: "/wishlist",
+    element: <Wishlist />
+  },
+  {
+    path: "/admin",
+    element: <AdminDashboard />,
+  },
 ]);
 
 createRoot(document.getElementById("root")).render(
