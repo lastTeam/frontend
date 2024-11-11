@@ -6,33 +6,43 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // In Login.jsx, modify handleLogin:
   const handleLogin = async (e) => {
     e.preventDefault();
-  
-    try {
-      const response = await axios.post("http://127.0.0.1:5000/api/login", {
-        email: email,
-        password: password,
-      });
+    setError(""); // Clear any previous errors
 
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:5000/api/auth/login",
+        {
+          email: email,
+          password: password,
+        }
+      );
+
+      // Store the token and user info
       localStorage.setItem("token", response.data.token);
-      localStorage.setItem("userId", response.data.userId);
+      localStorage.setItem("userRole", response.data.role);
 
       // Redirect based on user role
-      if (response.data.role === "SELLER") {
-        navigate("/dashboard");
+      if (response.data.role === "ADMIN") {
+        navigate("/admin"); // Redirect to admin dashboard
+      } else if (response.data.role === "SELLER") {
+        navigate("/dashboard"); // Redirect to seller dashboard
       } else {
-        navigate("/home");
+        navigate("/home"); // Redirect regular users to home
       }
     } catch (error) {
-      alert("Oooops...");
+      if (error.response) {
+        setError(error.response.data.error || "Invalid credentials");
+      } else {
+        setError("An error occurred during login");
+      }
       console.error("Error during login:", error);
     }
   };
-  
 
   return (
     <div
@@ -71,6 +81,12 @@ const Login = () => {
             <p className="text-center text-gray-700 mb-6 font-medium">
               Access your account to explore our amazing features.
             </p>
+
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                {error}
+              </div>
+            )}
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
@@ -134,5 +150,6 @@ const Login = () => {
     </div>
   );
 };
+
 
 export default Login;

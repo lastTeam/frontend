@@ -176,7 +176,10 @@ const Dashboard = () => {
         );
         setSuccessMessage("Product updated successfully!");
       } else {
+
         await axios.post("http://localhost:5000/api/products", productData);
+        console.log(productData)
+
         setSuccessMessage("Product added successfully!");
       }
 
