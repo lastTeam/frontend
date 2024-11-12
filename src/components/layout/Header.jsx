@@ -49,7 +49,7 @@ export function Header({ onSortByPrice }) {
 
         {/* Navigation Links */}
         <div className="flex items-center gap-8 ml-12">
-          {["Home", "Shop", "Product", "Wishlist", "Contact Us"].map((item) => (
+          {["Home", "Shop", "Product", "Wishlist", "Contact Us" ].map((item) => (
             <Link
               key={item}
               to={`/${item.toLowerCase().replace(" ", "-")}`}
