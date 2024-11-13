@@ -32,7 +32,7 @@ const Login = () => {
       } else if (response.data.role === "SELLER") {
         navigate("/dashboard"); // Redirect to seller dashboard
       } else {
-        navigate("/home"); // Redirect regular users to home
+        navigate("/"); // Redirect regular users to home
       }
     } catch (error) {
       if (error.response) {

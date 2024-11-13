@@ -159,22 +159,19 @@ export function HomePage() {
           </div>
         </div>
       </section>
+      
+<p className="text-lg font-light text-black-700 tracking-wide leading-relaxed px-6 py-4 bg-white/80 backdrop-blur-sm shadow-lg border-l-4 border-[#EBBE43] rounded-md"> 
+Crafty guaranteeing ceramic of super quality. Our passion would be nothing without it being shared with you. Hence, we are engaged to building your loyalty and satisfying you by offering you 100% authentic, handmade and high-quality pottery. Our excellence goes through our requirement in terms of products. For this, we surround ourselves with best designers and potters to offer you the most quantitative pottery that it is possible to find. 
+</p>
 
       {/* New Arrivals Section */}
       <section className="flex flex-col items-center pt-12 pl-20 w-full bg-white max-md:pl-5 max-md:max-w-full">
-        <div className="flex flex-wrap gap-5 justify-between w-full font-medium tracking-tight max-w-[1120px] max-md:max-w-full">
-          <h2 className="text-4xl leading-10 text-[#EBBE43]">
-            New
-            <br />
-            Arrivals
-          </h2>
-          <Link
-            to="/products"
-            className="flex overflow-hidden relative flex-col self-end mt-16 text-base leading-7 border-b border-solid aspect-[4.714] border-b-neutral-900 text-neutral-900 w-[132px] max-md:mt-10 hover:text-[#EBBE43] hover:border-[#EBBE43] transition-colors duration-300"
-          >
-            More Products
-          </Link>
-        </div>
+      <div className="flex flex-wrap gap-0 justify-center w-full font-medium tracking-tight max-w-[1120px] max-md:max-w-full mx-auto">
+  <h2 className="text-4xl leading-10 text-[#EBBE43]">
+    New Arrivals
+  </h2>
+</div>
+
         <div className="flex flex-wrap gap-6 self-end mt-12 max-md:mt-10">
           {sortedProducts?.map((product) => (
             <ProductCard key={product.id} product={product} />
