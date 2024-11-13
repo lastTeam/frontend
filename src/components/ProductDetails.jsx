@@ -1,6 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useCart } from "./home/CartContext";
+import { Header } from "../components/layout/Header.jsx";
+import Swal from "sweetalert2";
+
 
 function ProductDetails() {
   const { productId } = useParams();
@@ -27,9 +30,20 @@ function ProductDetails() {
 
   const handleAddToCart = async () => {
     if (!userId) {
-      setError("Please log in to add items to cart");
+      Swal.fire({
+        icon: "info",
+        title: "Login Required",
+        text: "Please log in to add items to your cart.",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#EBBE43",
+        background: "#fef9e7",
+        customClass: {
+          popup: "animated fadeIn",
+        },
+      });
       return;
     }
+    
 
     if (product) {
       try {
@@ -87,7 +101,6 @@ function ProductDetails() {
     basePrice,
     discountPrice,
     colors,
-    reviews,
     images,
     owner,
   } = product;
@@ -95,10 +108,11 @@ function ProductDetails() {
   const isInCart = cartItems.some((item) => item.id === product.id);
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-190 py-12">
+      <Header/>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Images */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           {[...new Set(images)]?.map((image, index) => (
             <img
               key={index}
@@ -156,7 +170,7 @@ function ProductDetails() {
               <button
                 className={`flex-1 px-4 py-3 font-medium rounded-lg shadow-md transition duration-300 ${
                   isInCart
-                    ? "bg-green-500 hover:bg-green-600"
+                    ? "bg-yellow-500 hover:bg-yellow-600"
                     : "bg-yellow-500 hover:bg-yellow-600"
                 } text-white`}
                 onClick={handleAddToCart}
@@ -180,36 +194,6 @@ function ProductDetails() {
             )}
           </div>
 
-          {/* Reviews Section */}
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              Reviews
-            </h2>
-            <div className="space-y-4">
-              {reviews && reviews.length > 0 ? (
-                reviews.map((review, index) => (
-                  <div
-                    key={index}
-                    className="p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-100"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-yellow-500">
-                        {"★".repeat(review.rating)}
-                        {"☆".repeat(5 - review.rating)}
-                      </span>
-                      <span className="text-gray-600">({review.rating}/5)</span>
-                    </div>
-                    <p className="text-gray-700 mb-2">{review.comment}</p>
-                    <p className="text-sm text-gray-500">
-                      - {review.user?.username}
-                    </p>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-500 italic">No reviews yet.</p>
-              )}
-            </div>
-          </div>
 
           {/* Seller Information */}
           <div className="p-6 bg-gray-50 rounded-lg shadow-sm border border-gray-100">
@@ -229,6 +213,11 @@ function ProductDetails() {
               </p>
             </div>
           </div>
+
+          <button  className="flex-1 px-4 py-3 bg-yellow-500 text-white font-medium rounded-lg shadow-md hover:bg-yellow-600 transition duration-300"
+          onClick={()=>{navigate("/chat")}}>Contact Us 
+
+          </button>
         </div>
       </div>
     </div>
