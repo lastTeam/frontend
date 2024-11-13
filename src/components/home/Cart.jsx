@@ -5,10 +5,9 @@ import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
 import { Header } from "../layout/Header";
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { userId } = useCart();
+  const { userId, cartItems, setCartItems } = useCart();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,7 +30,7 @@ const Cart = () => {
           ...item,
           quantity: item.quantity || 1,
         }));
-        setCartItems(Array.isArray(data) ? itemsWithQuantity : []);
+        setCartItems(Array.isArray(data) ? itemsWithQuantity : []); // Update context cart items
         setLoading(false);
       } catch (error) {
         console.error("Error fetching cart items:", error);
@@ -41,7 +40,7 @@ const Cart = () => {
     };
 
     fetchCartItems();
-  }, [userId]);
+  }, [userId, setCartItems]);
 
   const handleQuantityChange = (productId, change) => {
     setCartItems((prevItems) =>
@@ -82,6 +81,24 @@ const Cart = () => {
       0
     );
   };
+  const handleCheckout = () => {
+    const checkoutData = {
+      cartItems,
+      totalAmount: calculateTotal(),
+      userId
+    };
+    
+    // Navigate to checkout with cart data
+    navigate('/checkout', { 
+      state: { 
+        checkoutData: {
+          cartItems,
+          totalAmount: calculateTotal()
+        }
+      }
+    });
+  };
+  
 
   if (loading) {
     return (
@@ -183,11 +200,13 @@ const Cart = () => {
               </div>
             </div>
             <button
-              onClick={() => navigate("/checkout")}
-              className="w-full bg-yellow-500 text-white px-8 py-4 rounded-lg hover:bg-yellow-600 transition-all duration-300 shadow-lg hover:shadow-xl text-lg font-semibold"
-            >
-              Proceed to Checkout
-            </button>
+
+      onClick={handleCheckout}
+      className="w-full bg-green-500 text-white px-8 py-4 rounded-lg hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-xl text-lg font-semibold"
+    >
+      Proceed to Checkout
+    </button>
+
           </div>
         </div>
       )}
