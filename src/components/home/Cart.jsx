@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useCart } from "./CartContext";
 import { useNavigate } from "react-router-dom";
 import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
+import { Header } from "../layout/Header";
 
 const Cart = () => {
   const [loading, setLoading] = useState(true);
@@ -119,6 +120,7 @@ const Cart = () => {
 
   return (
     <div className="container mx-auto p-4 max-w-6xl">
+      <Header/>
       <h2 className="text-3xl font-bold mb-6 text-gray-800">Your Cart</h2>
       {cartItems.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
@@ -198,11 +200,13 @@ const Cart = () => {
               </div>
             </div>
             <button
+
       onClick={handleCheckout}
       className="w-full bg-green-500 text-white px-8 py-4 rounded-lg hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-xl text-lg font-semibold"
     >
       Proceed to Checkout
     </button>
+
           </div>
         </div>
       )}

@@ -20,15 +20,15 @@ import OrderDetails from "./components/OrderDetails.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login />,
+    element: <HomePage />,
   },
   {
     path: "signup",
     element: <Signup />,
   },
   {
-    path: "/home",
-    element: <HomePage />,
+    path: "/login",
+    element: <Login />,
   },
   {
     path: "products/:productId",
