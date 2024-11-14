@@ -6,7 +6,7 @@ import Signup from "./authentication/SignUp.jsx";
 import HomePage from "./components/home/HomePage.jsx";
 import "./index.css";
 import ProductDetails from "./components/ProductDetails.jsx";
-import { CartProvider } from "./components/home/CartContext";
+import { CartProvider } from "./components/home/CartContext.jsx";
 import Cart from "./components/home/Cart.jsx";
 import SearchResults from "./components/SearchByTitle.jsx";
 import Dashboard from "./components/home/Dashboard.jsx";
@@ -87,4 +87,3 @@ createRoot(document.getElementById("root")).render(
     </CartProvider>
   </StrictMode>
 );
-
