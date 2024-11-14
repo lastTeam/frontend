@@ -14,6 +14,9 @@ import Order from "./components/Order.jsx";
 import Wishlist from "./components/home/Wishlist.jsx";
 import AdminDashboard from "./components/home/AdminDashboard.jsx";
 import App from "./App.jsx";
+import PaymentSuccess from "./components/PaymentSuccess.jsx";
+import PaymentFailed from "./components/PaymentFailed.jsx";
+import OrderDetails from "./components/OrderDetails.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -61,6 +64,20 @@ const router = createBrowserRouter([
     path: "/admin",
     element: <AdminDashboard />,
   },
+  {
+    path: "/payment-success",
+    element: <PaymentSuccess />,
+
+  },
+  {
+    path: "/payment-failed",
+    element: <PaymentFailed />,
+  },
+  {
+    path: '/order/:orderId',
+    element: <OrderDetails />,
+  },
+  
 ]);
 
 createRoot(document.getElementById("root")).render(

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Users, Package, ShoppingCart, Grid, Trash2, Edit, LineChart as ChartIcon, Home } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -63,40 +64,78 @@ const AdminDashboard = () => {
   }, [activeView]);
 
   const handleDeleteUser = async (userId) => {
-    if (!window.confirm('Are you sure you want to delete this user?')) return;
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#EBBE43',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    });
 
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.delete(`http://127.0.0.1:5000/api/admin/users/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+    if (result.isConfirmed) {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.delete(`http://127.0.0.1:5000/api/admin/users/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
 
-      if (response.status === 200) {
-        setUsers(users.filter(user => user.id !== userId));
-        fetchDashboardData();
+        if (response.status === 200) {
+          setUsers(users.filter(user => user.id !== userId));
+          fetchDashboardData();
+          Swal.fire(
+            'Deleted!',
+            'User has been deleted successfully.',
+            'success'
+          );
+        }
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        Swal.fire(
+          'Error!',
+          'Failed to delete user.',
+          'error'
+        );
       }
-    } catch (error) {
-      console.error('Error deleting user:', error);
-      alert('Error deleting user');
     }
   };
 
   const handleDeleteProduct = async (productId) => {
-    if (!window.confirm('Are you sure you want to delete this product?')) return;
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#EBBE43',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    });
 
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.delete(`http://127.0.0.1:5000/api/products/${productId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+    if (result.isConfirmed) {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.delete(`http://127.0.0.1:5000/api/products/${productId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
 
-      if (response.status === 200) {
-        setProducts(products.filter(product => product.id !== productId));
-        fetchDashboardData();
+        if (response.status === 200) {
+          setProducts(products.filter(product => product.id !== productId));
+          fetchDashboardData();
+          Swal.fire(
+            'Deleted!',
+            'Product has been deleted successfully.',
+            'success'
+          );
+        }
+      } catch (error) {
+        console.error('Error deleting product:', error);
+        Swal.fire(
+          'Error!',
+          'Failed to delete product.',
+          'error'
+        );
       }
-    } catch (error) {
-      console.error('Error deleting product:', error);
-      alert('Error deleting product');
     }
   };
 
