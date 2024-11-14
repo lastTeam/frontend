@@ -6,7 +6,7 @@ import { ProductCard } from "./ProductCard";
 import { Newsletter } from "./Newsletter";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight,Sparkles } from "lucide-react";
 
 const categories = [
   {
@@ -159,22 +159,50 @@ export function HomePage() {
           </div>
         </div>
       </section>
+      
+      <section className="max-w-6xl mx-auto px-4 py-16">
+  <div className="relative">
+    <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
+      <Sparkles className="h-12 w-12 text-[#EBBE43] animate-pulse" />
+    </div>
+    
+    <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-xl border border-gray-100">
+      <div className="max-w-3xl mx-auto space-y-6">
+        <h2 className="text-2xl font-semibold text-[#EBBE43] text-center mb-6">
+          Our Commitment to Excellence
+        </h2>
+        
+        <p className="text-lg font-light text-gray-700 tracking-wide leading-relaxed">
+          <span className="font-medium text-[#EBBE43]">Crafty</span> guaranteeing ceramic of super quality. Our passion would be nothing without it being shared with you.
+        </p>
+        
+        <p className="text-lg font-light text-gray-700 tracking-wide leading-relaxed">
+          Hence, we are engaged to building your loyalty and satisfying you by offering you <span className="font-medium">100% authentic, handmade</span> and <span className="font-medium">high-quality pottery</span>.
+        </p>
+        
+        <p className="text-lg font-light text-gray-700 tracking-wide leading-relaxed">
+          Our excellence goes through our requirement in terms of products. For this, we surround ourselves with best designers and potters to offer you the most quantitative pottery that it is possible to find.
+        </p>
+        
+        <div className="flex justify-center pt-6">
+          <Link to="/products" className="inline-flex items-center px-6 py-3 bg-[#EBBE43] text-white rounded-full hover:bg-[#d4a93c] transition-colors duration-300 transform hover:scale-105">
+            Discover Our Collection
+            <ChevronRight className="ml-2 h-5 w-5" />
+          </Link>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* New Arrivals Section */}
       <section className="flex flex-col items-center pt-12 pl-20 w-full bg-white max-md:pl-5 max-md:max-w-full">
-        <div className="flex flex-wrap gap-5 justify-between w-full font-medium tracking-tight max-w-[1120px] max-md:max-w-full">
-          <h2 className="text-4xl leading-10 text-[#EBBE43]">
-            New
-            <br />
-            Arrivals
-          </h2>
-          <Link
-            to="/products"
-            className="flex overflow-hidden relative flex-col self-end mt-16 text-base leading-7 border-b border-solid aspect-[4.714] border-b-neutral-900 text-neutral-900 w-[132px] max-md:mt-10 hover:text-[#EBBE43] hover:border-[#EBBE43] transition-colors duration-300"
-          >
-            More Products
-          </Link>
-        </div>
+      <div className="flex flex-wrap gap-0 justify-center w-full font-medium tracking-tight max-w-[1120px] max-md:max-w-full mx-auto">
+  <h2 className="text-4xl leading-10 text-[#EBBE43]">
+    New Arrivals
+  </h2>
+</div>
+
         <div className="flex flex-wrap gap-6 self-end mt-12 max-md:mt-10">
           {sortedProducts?.map((product) => (
             <ProductCard key={product.id} product={product} />

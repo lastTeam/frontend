@@ -6,7 +6,7 @@ import Signup from "./authentication/SignUp.jsx";
 import HomePage from "./components/home/HomePage.jsx";
 import "./index.css";
 import ProductDetails from "./components/ProductDetails.jsx";
-import { CartProvider } from "./components/home/CartContext";
+import { CartProvider } from "./components/home/CartContext.jsx";
 import Cart from "./components/home/Cart.jsx";
 import SearchResults from "./components/SearchByTitle.jsx";
 import Dashboard from "./components/home/Dashboard.jsx";
@@ -17,15 +17,15 @@ import App from "./App.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login />,
+    element: <HomePage />,
   },
   {
     path: "signup",
     element: <Signup />,
   },
   {
-    path: "/home",
-    element: <HomePage />,
+    path: "/login",
+    element: <Login />,
   },
   {
     path: "products/:productId",
@@ -70,4 +70,3 @@ createRoot(document.getElementById("root")).render(
     </CartProvider>
   </StrictMode>
 );
-
