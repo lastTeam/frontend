@@ -13,7 +13,7 @@ export function HeroSection() {
       {/* Background Image with Overlay */}
       <div className="absolute inset-0">
         <img
-          src="https://i.pinimg.com/474x/60/0d/47/600d473c1405db545fad6afe21e505e8.jpg"
+          src="https://th.bing.com/th/id/OIP.CpMJzN_yQ_2WegMdelUd1gHaEJ?rs=1&pid=ImgDetMain"
           alt="Crafty Background"
           className="object-cover w-full h-full"
         />

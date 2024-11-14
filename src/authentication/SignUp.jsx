@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../components/home/CartContext.jsx";
+import Swal from "sweetalert2";
+
 
 const Signup = () => {
   const [firstName, setFirstName] = useState("");
@@ -16,9 +18,15 @@ const Signup = () => {
 
   const handleSignUp = async () => {
     if (!userName || !email || !password || !role) {
-      setErrorMessage("All fields are required.");
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Information",
+        text: "All fields are required.",
+        confirmButtonColor: "#EBBE43",
+      });
       return;
     }
+    
 
     try {
       const response = await axios.post("http://127.0.0.1:5000/api/signup", {
@@ -39,7 +47,7 @@ const Signup = () => {
       if (role.toUpperCase() === "SELLER") {
         navigate("/dashboard");
       } else {
-        navigate("/home");
+        navigate("/");
       }
     } catch (error) {
       setErrorMessage(

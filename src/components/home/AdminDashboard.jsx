@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Package, ShoppingCart, Grid, Trash2, Edit } from 'lucide-react';
+import { Users, Package, ShoppingCart, Grid, Trash2, Edit, LineChart as ChartIcon, Home } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import axios from 'axios';
 
@@ -15,6 +15,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState('dashboard');
   const [statsHistory, setStatsHistory] = useState([]);
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
 
   const fetchDashboardData = async () => {
     try {
@@ -99,136 +100,192 @@ const AdminDashboard = () => {
     }
   };
 
-  const StatisticsChart = () => {
-    const pieData = [
-      { name: 'Users', value: stats.totalUsers, color: '#EBBE43' },
-      { name: 'Products', value: stats.totalProducts, color: '#82ca9d' },
-      { name: 'Orders', value: stats.totalOrders, color: '#8884d8' },
-    ];
+  const NavItem = ({ icon: Icon, text, view }) => (
+    <div
+      onClick={() => setActiveView(view)}
+      className={`flex items-center p-4 cursor-pointer transition-all duration-200 hover:bg-[#EBBE43] hover:text-white
+        ${activeView === view ? 'bg-[#EBBE43] text-white' : 'text-gray-600'}`}
+    >
+      <Icon className="h-5 w-5" />
+      <span className={`ml-4 transition-all duration-200 ${sidebarExpanded ? 'opacity-100' : 'opacity-0 w-0'}`}>
+        {text}
+      </span>
+    </div>
+  );
 
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 rounded-lg shadow mb-8">
-        {/* Pie Chart */}
-        <div className="h-80">
-          <h2 className="text-xl font-semibold mb-4 text-[#EBBE43]">Distribution Statistics</h2>
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={pieData}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={80}
-                paddingAngle={5}
-                dataKey="value"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-              >
-                {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
+  const Sidebar = () => (
+    <div
+      className="fixed left-0 top-0 h-full bg-white shadow-lg transition-all duration-300 z-50"
+      style={{ width: sidebarExpanded ? '240px' : '72px' }}
+      onMouseEnter={() => setSidebarExpanded(true)}
+      onMouseLeave={() => setSidebarExpanded(false)}
+    >
+      <div className="p-4 border-b">
+        <h2 className={`font-bold text-[#EBBE43] transition-all duration-200 
+          ${sidebarExpanded ? 'text-xl' : 'text-sm text-center'}`}>
+          {sidebarExpanded ? 'Admin Dashboard' : 'AD'}
+        </h2>
+      </div>
+      <nav className="mt-6">
+        <NavItem icon={Home} text="Dashboard" view="dashboard" />
+        <NavItem icon={Users} text="Users" view="users" />
+        <NavItem icon={Package} text="Products" view="products" />
+      </nav>
+    </div>
+  );
 
+  const DashboardOverview = () => (
+    <div className="space-y-6">
+      {/* Stat Cards Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard icon={Users} title="Total Users" value={stats.totalUsers} />
+        <StatCard icon={Package} title="Total Products" value={stats.totalProducts} />
+        <StatCard icon={ShoppingCart} title="Total Orders" value={stats.totalOrders} />
+        <StatCard icon={Grid} title="Categories" value={stats.totalCategories} />
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Line Chart */}
-        <div className="h-80">
-          <h2 className="text-xl font-semibold mb-4 text-[#EBBE43]">Growth Statistics</h2>
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={statsHistory}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="users" stroke="#EBBE43" name="Users" />
-              <Line type="monotone" dataKey="products" stroke="#82ca9d" name="Products" />
-              <Line type="monotone" dataKey="orders" stroke="#8884d8" name="Orders" />
-            </LineChart>
-          </ResponsiveContainer>
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h2 className="text-xl font-semibold mb-6 text-[#EBBE43]">Growth Trends</h2>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={statsHistory}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="users" stroke="#EBBE43" name="Users" />
+                <Line type="monotone" dataKey="products" stroke="#82ca9d" name="Products" />
+                <Line type="monotone" dataKey="orders" stroke="#8884d8" name="Orders" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-      </div>
-    );
-  };
 
-  const StatsCards = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <div 
-        className="bg-white p-6 rounded-lg shadow cursor-pointer hover:bg-gray-50"
-        onClick={() => setActiveView('dashboard')}
-      >
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-gray-500">Total Users</p>
-            <p className="text-2xl font-bold">{stats.totalUsers}</p>
+        {/* Pie Chart */}
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h2 className="text-xl font-semibold mb-6 text-[#EBBE43]">Distribution Overview</h2>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: 'Users', value: stats.totalUsers, color: '#EBBE43' },
+                    { name: 'Products', value: stats.totalProducts, color: '#82ca9d' },
+                    { name: 'Orders', value: stats.totalOrders, color: '#8884d8' },
+                  ]}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={90}
+                  paddingAngle={5}
+                  dataKey="value"
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                >
+                  {[
+                    { color: '#EBBE43' },
+                    { color: '#82ca9d' },
+                    { color: '#8884d8' },
+                  ].map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
-          <Users className="h-8 w-8 text-[#EBBE43]" />
-        </div>
-      </div>
-      
-      <div 
-        className="bg-white p-6 rounded-lg shadow cursor-pointer hover:bg-gray-50"
-        onClick={() => setActiveView('products')}
-      >
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-gray-500">Total Products</p>
-            <p className="text-2xl font-bold">{stats.totalProducts}</p>
-          </div>
-          <Package className="h-8 w-8 text-[#EBBE43]" />
-        </div>
-      </div>
-
-      <div className="bg-white p-6 rounded-lg shadow">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-gray-500">Total Orders</p>
-            <p className="text-2xl font-bold">{stats.totalOrders}</p>
-          </div>
-          <ShoppingCart className="h-8 w-8 text-[#EBBE43]" />
-        </div>
-      </div>
-
-      <div className="bg-white p-6 rounded-lg shadow">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-gray-500">Categories</p>
-            <p className="text-2xl font-bold">{stats.totalCategories}</p>
-          </div>
-          <Grid className="h-8 w-8 text-[#EBBE43]" />
         </div>
       </div>
     </div>
   );
 
-  const ProductsTable = () => (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-[#EBBE43]">Products Management</h2>
-          <button 
-            onClick={() => setActiveView('dashboard')}
-            className="px-4 py-2 bg-[#EBBE43] text-white rounded hover:bg-[#d4a93c]"
-          >
-            Back to Dashboard
-          </button>
+  const StatCard = ({ icon: Icon, title, value }) => (
+    <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-gray-500">{title}</p>
+          <p className="text-2xl font-bold">{value}</p>
         </div>
+        <Icon className="h-8 w-8 text-[#EBBE43]" />
+      </div>
+    </div>
+  );
+
+  const UsersView = () => (
+    <div className="bg-white rounded-lg shadow">
+      <div className="p-6">
+        <h2 className="text-xl font-semibold mb-6 text-[#EBBE43]">Users Management</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Owner</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Orders</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-200">
+              {users.map((user) => (
+                <tr key={user.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">
+                      {user.firstName} {user.lastName}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-500">{user.email}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-[#EBBE43] text-white">
+                      {user.roles}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {user._count?.orders || 0}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    {!user.isAdmin && (
+                      <button
+                        onClick={() => handleDeleteUser(user.id)}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+
+  const ProductsView = () => (
+    <div className="bg-white rounded-lg shadow">
+      <div className="p-6">
+        <h2 className="text-xl font-semibold mb-6 text-[#EBBE43]">Products Management</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Owner</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
               {products.map((product) => (
-                <tr key={product.id}>
+                <tr key={product.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">{product.title}</div>
                   </td>
@@ -276,68 +333,21 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6 text-[#EBBE43]">Admin Dashboard</h1>
-        
-        <StatsCards />
-        
-        {activeView === 'dashboard' && (
-          <>
-            <StatisticsChart />
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              <div className="p-6">
-                <h2 className="text-xl font-semibold mb-4 text-[#EBBE43]">Users Management</h2>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Orders</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {users.map((user) => (
-                        <tr key={user.id}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900">
-                              {user.firstName} {user.lastName}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-500">{user.email}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-[#EBBE43] text-white">
-                              {user.roles}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {user._count?.orders || 0}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            {!user.isAdmin && (
-                              <button
-                                onClick={() => handleDeleteUser(user.id)}
-                                className="text-red-600 hover:text-red-900"
-                              >
-                                <Trash2 className="h-5 w-5" />
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-
-        {activeView === 'products' && <ProductsTable />}
+      <Sidebar />
+      <div 
+        className="transition-all duration-300"
+        style={{ marginLeft: sidebarExpanded ? '240px' : '72px' }}
+      >
+        <div className="p-6 space-y-6">
+          {activeView === 'dashboard' && (
+            <>
+              <h1 className="text-2xl font-bold text-[#EBBE43] mb-6">Dashboard Overview</h1>
+              <DashboardOverview />
+            </>
+          )}
+          {activeView === 'users' && <UsersView />}
+          {activeView === 'products' && <ProductsView />}
+        </div>
       </div>
     </div>
   );

@@ -6,74 +6,67 @@ import Signup from "./authentication/SignUp.jsx";
 import HomePage from "./components/home/HomePage.jsx";
 import "./index.css";
 import ProductDetails from "./components/ProductDetails.jsx";
-import { CartProvider, useCart } from "./components/home/CartContext";
+import { CartProvider } from "./components/home/CartContext.jsx";
 import Cart from "./components/home/Cart.jsx";
 import SearchResults from "./components/SearchByTitle.jsx";
 import Dashboard from "./components/home/Dashboard.jsx";
 import Order from "./components/Order.jsx";
 import Wishlist from "./components/home/Wishlist.jsx";
 import AdminDashboard from "./components/home/AdminDashboard.jsx";
-import ChatComponent from "./components/Chat.jsx";
-
-const AppWrapper = () => {
-  const { userId } = useCart();
-
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Login />,
+import App from "./App.jsx";
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <HomePage />,
+  },
+  {
+    path: "signup",
+    element: <Signup />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "products/:productId",
+    element: <ProductDetails />,
+  },
+  {
+    path: "/cart",
+    element: <Cart />,
+  },
+  {
+    path: "search/:title",
+    element: <SearchResults />,
+  },
+  
+  {
+     path: "/checkout", element: <Order /> 
     },
-    {
-      path: "signup",
-      element: <Signup />,
-    },
-    {
-      path: "/home",
-      element: <HomePage />,
-    },
-    {
-      path: "products/:productId",
-      element: <ProductDetails />,
-    },
-    {
-      path: "/cart",
-      element: <Cart />,
-    },
-    {
-      path: "search/:title",
-      element: <SearchResults />,
-    },
-    {
-      path: "/checkout",
-      element: <Order />,
-    },
-    {
-      path: "/dashboard",
-      element: <Dashboard />,
-    },
-    {
-      path: "/chat",
-      element: <ChatComponent />,
-    },
-    {
-      path: "/wishlist",
-      element: <Wishlist />,
-    },
-    {
-      path: "/admin",
-      element: <AdminDashboard />,
-    },
-  ]);
-
-  return (
-    <StrictMode>
-      <RouterProvider router={router} />
-    </StrictMode>
-  );
-};
+  
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
+  },
+  {
+    path: "/chat", element: <App />,
+    
+  },
+  {
+    path: "/wishlist",
+    element: <Wishlist />
+  
+  },
+  {
+    path: "/admin",
+    element: <AdminDashboard />,
+  },
+]);
 
 createRoot(document.getElementById("root")).render(
-  <CartProvider>
-    <AppWrapper />
-  </CartProvider>
+  <StrictMode>
+    <CartProvider>
+      <RouterProvider router={router} />
+    </CartProvider>
+  </StrictMode>
 );
