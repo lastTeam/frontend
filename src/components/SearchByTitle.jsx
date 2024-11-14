@@ -3,6 +3,7 @@ import axios from "axios";
 import { ProductCard } from "./home/ProductCard";
 import { useParams } from "react-router-dom";
 import { Search } from "lucide-react";
+import Header from './layout/Header'
 
 const SearchResults = () => {
   const [products, setProducts] = useState([]);
@@ -27,10 +28,12 @@ const SearchResults = () => {
   }, [title]);
 
   return (
-    <div
-      className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100 
-      relative overflow-hidden"
-    >
+    // <div
+    //   className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100 
+    //   relative overflow-hidden"
+    // >
+    <div>
+      <Header/>
       {/* Background Pattern */}
       <div
         className="absolute inset-0 opacity-10 bg-[size:100px_100px] 
@@ -88,7 +91,7 @@ const SearchResults = () => {
           </div>
         )}
       </div>
-    </div>
+     </div>
   );
 };
 

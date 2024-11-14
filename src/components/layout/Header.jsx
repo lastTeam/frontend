@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, User, Search } from "lucide-react";
+import { ShoppingCart, Search , LogOutIcon } from "lucide-react";
+import Swal from 'sweetalert2';
 
 export function Header({ onSortByPrice }) {
   const [isDescending, setIsDescending] = React.useState(true);
@@ -39,17 +40,20 @@ export function Header({ onSortByPrice }) {
         className="flex items-center justify-between px-20 py-4 w-full max-md:px-5 max-md:max-w-full"
         style={{ backgroundColor: "#EBBE43" }}
       >
+        
         {/* Logo */}
         <Link
           to="/"
-          className="text-4xl font-medium italic tracking-wider hover:scale-105 transition-transform duration-300 font-serif text-white flex-shrink-0"
+          className="text-4xl font-medium italic tracking-wider hover:scale-500 transition-transform duration-400 font-serif text-white flex-shrink-10"
         >
-          Crafty<span>.</span>
+          Crafty
         </Link>
 
         {/* Navigation Links */}
         <div className="flex items-center gap-8 ml-12">
-          {["Home", "Shop", "Product", "Wishlist", "Contact Us"].map((item) => (
+          <button  onClick={() => navigate("/")}
+            className={`text-base font-medium whitespace-nowrap transform hover:-translate-y-1 hover:scale-110 transition-all duration-300 ease-in-out text-white`} >Home</button>
+          {[ "Wishlist" ].map((item) => (
             <Link
               key={item}
               to={`/${item.toLowerCase().replace(" ", "-")}`}
@@ -59,9 +63,12 @@ export function Header({ onSortByPrice }) {
             </Link>
           ))}
         </div>
-
+<div className="flex items-center gap-8 ml-12">
+  <button   onClick={() => navigate("/login")}
+            className={`text-base font-medium whitespace-nowrap transform hover:-translate-y-1 hover:scale-110 transition-all duration-300 ease-in-out text-white`}>Login </button>
+</div>
         {/* Right Section: Search, Sort, and Icons */}
-        <div className="flex items-center gap-6 ml-auto">
+        <div className="flex items-center gap-20 ml-auto">
           {/* Enhanced Search Bar */}
           <div className="relative">
             <input
@@ -106,13 +113,7 @@ export function Header({ onSortByPrice }) {
             {isDescending ? "Sort: High to Low" : "Sort: Low to High"}
           </button>
 
-          {/* Account Icon */}
-          <button
-            aria-label="Account"
-            className="flex items-center justify-center hover:scale-110 transition-transform duration-300"
-          >
-            <User className="w-6 h-6 text-white" />
-          </button>
+         
 
           {/* Cart Icon */}
           <button
@@ -122,6 +123,38 @@ export function Header({ onSortByPrice }) {
           >
             <ShoppingCart className="w-6 h-6 text-white" />
           </button>
+         
+
+        
+<button
+  aria-label="Logout"
+  onClick={() => {
+    Swal.fire({
+      title: "Are you sure you want to logout?",
+      text: "We'll miss you! Come back soon!",
+      iconHtml: "😊", 
+      showCancelButton: true,
+      confirmButtonColor: "#EBBE43", 
+      cancelButtonColor: "#FF6B6B",
+      confirmButtonText: "Yes, log me out",
+      cancelButtonText: "Stay",
+      customClass: {
+        icon: "cute-icon", 
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+       
+        navigate("/login");
+      }
+    });
+  }}
+  className="flex items-center justify-center hover:scale-110 transition-transform duration-300"
+>
+  <LogOutIcon className="w-6 h-6 text-white" />
+</button>
+ 
+
+
         </div>
       </nav>
     </header>
