@@ -18,7 +18,7 @@ const PaymentFailed = () => {
         </Link>
         
         <Link
-          to="/home"
+          to="/"
           className="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700"
         >
           Continue Shopping
